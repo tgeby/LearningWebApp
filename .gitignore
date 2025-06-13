@@ -1,0 +1,15 @@
+# Node modules
+node_modules/
+# Build output
+build/
+# Firebase build artifacts
+.firebase/
+.firebaserc
+# Environment variables
+.env
+.env.local
+.env.*.local
+# IDE settings
+.DS_Store
+.vscode/
+.idea/
