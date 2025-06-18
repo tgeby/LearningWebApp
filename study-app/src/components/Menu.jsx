@@ -1,12 +1,14 @@
+import './Menu.css';
+
 import React from "react";
-import { useAuth } from '../context/AuthContext';
+// import { useAuth } from '../context/AuthContext';
 
 function Menu() {
-    const { user } = useAuth();
+    // const { user } = useAuth();
 
     return (
-        <div>
-            <h2>Welcome to the Menu {user?.email}</h2>
+        <div className="menu">
+            <h2>Menu</h2>
         </div>
     );
 }

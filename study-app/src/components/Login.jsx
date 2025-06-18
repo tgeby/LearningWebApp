@@ -1,3 +1,5 @@
+import './Login.css';
+
 import { signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { auth } from "../firebase";
@@ -53,24 +55,27 @@ function Login() {
 
     return (
         <div className="formContent">
-            <form className="log" onSubmit={HandleLogin}>
+            <h2>Welcome</h2>
+            <form className="login-form" onSubmit={HandleLogin}>
                 <input
                 type="text"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
+                className="textField"
                 />
                 <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
+                className="textField"
                 />
-                <button type="submit">Log In</button>
+                <button type="submit" className="login-button">Log In</button>
                 {loginError && <p>{loginError}</p>}
             </form>
-            <button onClick={HandleSignUp}>Sign Up</button>
-            <button onClick={HandleGoogleLogin}>Continue with Google</button>
+            <button onClick={HandleSignUp} className="login-button">Sign Up</button>
+            <button onClick={HandleGoogleLogin} className="login-button">Continue with Google</button>
         </div>
     );
 }
