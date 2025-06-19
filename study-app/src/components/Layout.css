@@ -18,7 +18,7 @@
 }
 
 .header-title {
-    font-size: 24px;
+    font-size: 1.5rem;
     max-width: 200px;
 }
 
@@ -31,9 +31,9 @@
     display: flex;
     align-items: center;
     text-align: center;
-    font-size: 14px;
+    font-size: 1rem;
     gap: 10px;
-    max-width: 300px;
+    max-width: 350px;
 }
 
 .user-info {
@@ -42,13 +42,19 @@
     word-break: break-all;
 }
 
-.logout-button {
-    width: 60px;
-    height: 40px;
-    border: 1px solid white;
+.header-button {
+    width: 80px;
+    height: 60px;
+    border: 2px solid white;
     border-radius: 15px;
     background-color: royalblue;
     color: white;
+    font-size: 1rem;
+}
+
+.header-button:hover {
+    background-color: lightskyblue;
+    cursor: pointer;
 }
 
 @media (max-width: 600px) {

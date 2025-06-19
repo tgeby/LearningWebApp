@@ -25,7 +25,7 @@ function Layout({ children }) {
                     </div>
                     <div className="header-right">
                         <span className="user-info">Logged in as {user.email}</span>
-                        <button onClick={handleLogout} className="logout-button">
+                        <button onClick={handleLogout} className="header-button">
                             Logout
                         </button>
                     </div>
