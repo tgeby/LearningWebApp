@@ -7,7 +7,7 @@ function StudyMenu() {
     return (
         <div className="menu">
             <div className="title">
-                Study Mode
+                <span className="title-text">Study Mode</span>
             </div>
         </div>
     );

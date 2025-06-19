@@ -1,4 +1,9 @@
-.menu {
+* {
+    box-sizing: border-box;
+}
+
+
+.menu, .main {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -7,16 +12,20 @@
     font-family: Arial, sans-serif;
     color: white;
     gap: 5px;
+    padding: 1rem;
 }
 
-.menu-button {
-    width: 50%;
+.menu-button, .main-button {
+    width: 100%; 
+    max-width: 500px;
     height: 100px;
     border-radius: 10px;
     font-size: 3rem;
     color: white;
     border: 5px solid white;
     background-color: royalblue;
+    white-space: normal;
+    text-align: center;
 }
 
 .title {
@@ -24,16 +33,56 @@
     justify-content: center;
     align-items: center;
     font-size: 5rem;
-    width: 50%;
+    width: 100%;
+    max-width: 500px;
     height: 100px;
+    padding-bottom: 0px; 
+    margin-bottom: 20px;
+    white-space: nowrap;
+}
+
+.title-text {
     border-bottom: 5px solid white;
     color: white;
     text-align: center;
-    padding-bottom: 0px; 
-    margin-bottom: 20px;
+    padding-left: 20px;
+    padding-right: 20px;
 }
 
 .menu-button:hover {
     background-color: lightskyblue;
     cursor: pointer;
+}
+
+@media (max-width: 900px) {
+    .title {
+        font-size: 4rem;
+    }
+
+    .menu-button {
+        font-size: 2.5rem;
+        height: 80px;
+    }
+}
+
+@media (max-width: 600px) {
+    .title {
+        font-size: 3rem;
+    }
+
+    .menu-button {
+        font-size: 2rem;
+        height: 70px;
+    }
+}
+
+@media (max-width: 400px) {
+    .title {
+        font-size: 2.2rem;
+    }
+
+    .menu-button {
+        font-size: 1.5rem;
+        height: 60px;
+    }
 }
