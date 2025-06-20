@@ -57,11 +57,26 @@
     cursor: pointer;
 }
 
-@media (max-width: 600px) {
+@media (max-width: 615px) {
     .header {
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 0px;
+    }
+
+}
+
+@media (max-width: 400px) {
+        
+    
+    .header-right {
+        font-size: .75rem;
+    }
+
+    .header-button {
+        width: 60px;
+        height: 40px;
+        font-size: .75rem;
     }
 
 }

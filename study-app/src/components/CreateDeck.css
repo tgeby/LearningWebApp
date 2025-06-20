@@ -61,7 +61,7 @@
     align-items: center;
     justify-content: center;
     gap: 2rem;
-    padding: 2rem;
+    padding: 1rem;
     border-radius: 15px;
     background-color: gray;
     margin-left: 1rem;
@@ -69,6 +69,7 @@
     max-width: 100%;
     width: fit-content;
     flex-wrap: wrap;
+    border: 5px solid white;
 }
 
 .text-fields {
@@ -78,10 +79,10 @@
 }
 
 .text-field {
-    display: flex;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: auto 1fr;
     gap: 10px;
-    width: 100%;
+    align-items: center;
 }
 
 .text-field span {
@@ -89,6 +90,18 @@
     width: 70px; /* Adjust as needed to fit the longest label */
     text-align: right; /* Optional: right-align for visual balance */
     font-size: 1.5rem;
+}
+
+.input-text-area {
+    width: 100%;
+    max-width: 450px;
+    min-width: 150px;
+    min-height: 100px;
+    resize: both;         /* allows user to drag to resize */
+    overflow: auto;           /* adds scroll if needed */
+    font-size: 1.2rem;
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .small-button {
@@ -103,20 +116,25 @@
     cursor: pointer;
 }
 
-.small-button:hover {
+.wide-button {
+    width: 50%;
+    min-width: 300px;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    color: white;
+    border: 5px solid white;
+    background-color: royalblue;
+    white-space: normal;
+    cursor: pointer;
+    margin-top: 20px;
+}
+
+.wide-button:hover {
     background-color: lightskyblue;
 }
 
-.input-text-area {
-    width: 100%;
-    max-width: 450px;
-    min-width: 250px;
-    min-height: 100px;
-    resize: both;         /* allows user to drag to resize */
-    overflow: auto;           /* adds scroll if needed */
-    font-size: 1.2rem;
-    padding: 10px;
-    border-radius: 5px;
+.small-button:hover {
+    background-color: lightskyblue;
 }
 
 .input {
@@ -133,10 +151,61 @@
   }
 
   .input-text-area {
-    max-width: 300px;
+    max-width: 350px;
   }
 
   .small-button {
     width: 100%;
   }
+}
+
+@media (max-width:520px) {
+    .input-text-area {
+        max-width: 275px;
+        font-size: 1em;
+    }
+}
+
+@media (max-width:450px) {
+    .input-text-area {
+        max-width: 180px;
+    }
+
+    .wide-button {
+        max-width: 150px;
+        min-width: 50px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width:350px) {
+    .text-field {
+        flex-direction: column;
+    }
+
+
+    .wide-button {
+        max-width: 75px;
+    }
+
+    .listed-card p {
+        font-size: 1rem;
+    }
+
+    .card-text {
+        font-size: 1rem;
+
+    }
+
+    .input-text-area {
+        max-width: 150px;
+    }
+
+    .deck-name-field {
+        font: 1.5rem;
+    } 
+
+    .deck-title {
+        font: 1rem;
+    }
 }
