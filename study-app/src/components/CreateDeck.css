@@ -4,10 +4,13 @@
     justify-content: center;
     align-items: left;
     gap: 30px;
-    padding-bottom: 10px;
-    border-bottom: 3px solid white;
-    padding: 1rem;
+    padding: 3rem; 
     margin-bottom: 1rem;
+    background-color: gray;
+    border-radius: 2rem;
+    max-width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .listed-card p {
@@ -21,6 +24,9 @@
     margin: 0px;
     white-space: pre-wrap;
     text-align: left;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    width: 100%;
 }
 
 .card-text p {
@@ -35,7 +41,7 @@
 .card-list {
   list-style: none;
   padding: 50px;
-  background-color: gray;
+  padding-top: 0px;
   border-radius: 15px;
   margin: 0 auto;
   text-align: center;

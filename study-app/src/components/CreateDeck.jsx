@@ -72,7 +72,7 @@ function CreateDeck() {
                         />
                     </div>
                     <div className='text-field'>
-                        <span>Back</span>
+                        <span>Back: </span>
                         <textarea
                             className="input-text-area"
                             placeholder='Back of Card'
