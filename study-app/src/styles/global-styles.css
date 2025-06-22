@@ -23,34 +23,29 @@
     font-size: 3rem;
     color: white;
     border: 5px solid white;
-    background-color: royalblue;
+    background-color: skyblue;
     white-space: normal;
     text-align: center;
 }
 
 .title {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 5rem;
-    width: 100%;
-    max-width: 500px;
-    height: 100px;
-    padding-bottom: 0px; 
-    margin-bottom: 20px;
-    white-space: nowrap;
-}
-
-.title-text {
-    border-bottom: 5px solid white;
-    color: white;
-    text-align: center;
-    padding-left: 20px;
-    padding-right: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 5rem;
+  width: 100%;
+  max-width: 500px;
+  height: 100px;
+  margin-bottom: 20px;
+  white-space: nowrap;
+  border-bottom: 5px solid white;
+  color: white;
+  text-align: center;
+  padding: 0 20px;
 }
 
 .menu-button:hover {
-    background-color: lightskyblue;
+    background-color: royalblue;
     cursor: pointer;
 }
 
@@ -86,3 +81,39 @@
         height: 60px;
     }
 }
+
+.deck-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 250px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.listed-deck {
+    width: 100%;
+    max-width: 500px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.listed-deck button {
+    width: 100%;
+    border: 5px solid white;
+    background-color: skyblue;
+    font-size: 2rem;
+    text-align: left;
+    padding: 1rem;
+    margin-top: 1rem;
+    border-radius: 15px;
+    color: white;
+    cursor: pointer;
+}
+
+.listed-deck button:hover {
+    background-color: royalblue;
+}
+

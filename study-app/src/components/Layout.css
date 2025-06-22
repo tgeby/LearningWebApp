@@ -47,13 +47,13 @@
     height: 60px;
     border: 2px solid white;
     border-radius: 15px;
-    background-color: royalblue;
+    background-color: skyblue;
     color: white;
     font-size: 1rem;
 }
 
 .header-button:hover {
-    background-color: lightskyblue;
+    background-color: royalblue;
     cursor: pointer;
 }
 

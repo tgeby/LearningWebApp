@@ -15,6 +15,7 @@ function CreateDeck() {
     const [currentDeck, setCurrentDeck] = useState([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [statusMessage, setStatusMessage] = useState('');
+    
     useEffect(() => {
         if (statusMessage) {
             const timeout = setTimeout(() => {

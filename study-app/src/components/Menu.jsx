@@ -25,7 +25,7 @@ function Menu() {
     return (
         <div className="menu">
             <div className="title">
-                <span className="title-text">Menu</span>
+                Menu
             </div>
             <button className="menu-button" onClick={handleStudy}>Study</button>
             <button className="menu-button" onClick={handleCreate}>Create</button>
