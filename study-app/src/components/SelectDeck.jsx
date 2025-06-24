@@ -14,40 +14,49 @@ function SelectDeck() {
     const location = useLocation();
     const navigate = useNavigate();
     const mode = location.state?.mode;
-    const [selectedDeckId, setSelectedDeckId] = useState(null);
     const [decks, setDecks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         async function getDecks() {
-            const ownedDecksSnapshot = await getDocs(
-                query(collection(db, 'owned_decks'), where('user_id', '==', user.uid))
-            );
-
-            if (ownedDecksSnapshot.empty) {
-                console.log('You have no decks');
-                setDecks([]);
-                return;
-            }
-            const deckIds = ownedDecksSnapshot.docs.map(doc => doc.id);
-
-            if (deckIds.length <= 10) {
-                const flashcardSetsQuery = query(
-                    collection(db, 'flashcard_sets'),
-                    where('__name__', 'in', deckIds)
+            try {
+                const ownedDecksSnapshot = await getDocs(
+                    query(collection(db, 'owned_decks'), where('user_id', '==', user.uid))
                 );
-                const querySnapshot = await getDocs(flashcardSetsQuery);
-                const foundDecks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setDecks(foundDecks);
-            } else {
-                // where('__name__', 'in', deckIds) only works 
-                const flashcardSetPromises = deckIds.map(deckId =>
-                    getDoc(doc(db, 'flashcard_sets', deckId))
-                );
-                const flashcardSetDocs = await Promise.all(flashcardSetPromises);
-                const foundDecks = flashcardSetDocs
-                    .filter(doc => doc.exists())
-                    .map(doc => ({ id: doc.id, ...doc.data() }));
-                setDecks(foundDecks);
+
+                if (ownedDecksSnapshot.empty) {
+                    console.log('You have no decks');
+                    setDecks([]);
+                    setError("No decks found. Have you created any yet?");
+                    return;
+                }
+                const deckIds = ownedDecksSnapshot.docs.map(doc => doc.id);
+
+                if (deckIds.length <= 10) {
+                    const flashcardSetsQuery = query(
+                        collection(db, 'flashcard_sets'),
+                        where('__name__', 'in', deckIds)
+                    );
+                    const querySnapshot = await getDocs(flashcardSetsQuery);
+                    const foundDecks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    setDecks(foundDecks);
+                } else {
+                    // where('__name__', 'in', deckIds) only works 
+                    const flashcardSetPromises = deckIds.map(deckId =>
+                        getDoc(doc(db, 'flashcard_sets', deckId))
+                    );
+                    const flashcardSetDocs = await Promise.all(flashcardSetPromises);
+                    const foundDecks = flashcardSetDocs
+                        .filter(doc => doc.exists())
+                        .map(doc => ({ id: doc.id, ...doc.data() }));
+                    setDecks(foundDecks);
+                }
+            } catch(error) {
+                console.log(error);
+                setError("Failed to load list of decks");
+            } finally {
+                setLoading(false);
             }
         }
         if (user) {
@@ -59,6 +68,8 @@ function SelectDeck() {
         navigate(`/${mode}`, { state: { deckId } });
     }
 
+    if (error) return <p>{error}</p>;
+    if (loading) return <p>Loading...</p>;
     if (!mode) return <div>Error: No study mode selected.</div>;
 
     const listDecks = decks.map((deck, index) => {
