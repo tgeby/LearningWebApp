@@ -4,7 +4,7 @@ import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { db } from '../firebase';
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
-import { getDoc, query, collection, where, doc } from 'firebase/firestore';
+import { getDoc, doc } from 'firebase/firestore';
 
 function Flashcards() {
 

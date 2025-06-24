@@ -1,5 +1,4 @@
 import '../styles/global-styles.css';
-import './StudyMenu.css';
 
 import { useNavigate } from 'react-router-dom';
 
