@@ -5,7 +5,7 @@
     flex-wrap: wrap;
     gap: 10px;
     padding: 5px 20px;
-    color: white;
+    color: var(--primary-text-color);
     border-bottom: 1px solid white;
 }
 
@@ -30,15 +30,18 @@
 .header-right {
     display: flex;
     align-items: center;
+    justify-content: right;
     text-align: center;
     font-size: 1rem;
     gap: 10px;
     max-width: 350px;
+    font-weight: bold;
+    width: 100%;
 }
 
 .user-info {
     flex-wrap: wrap;
-    max-width: 250px;
+    max-width: 100%;
     word-break: break-all;
 }
 
@@ -47,13 +50,14 @@
     height: 60px;
     border: 2px solid white;
     border-radius: 15px;
-    background-color: skyblue;
-    color: white;
+    background-color: var(--primary-button-background-color);
+    color: var(--primary-text-color);
     font-size: 1rem;
+    font-weight: bold;
 }
 
 .header-button:hover {
-    background-color: royalblue;
+    background-color: var(--primary-button-hover-color);
     cursor: pointer;
 }
 

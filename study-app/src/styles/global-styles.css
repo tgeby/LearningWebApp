@@ -2,6 +2,13 @@
     box-sizing: border-box;
 }
 
+:root {
+    --primary-button-background-color: royalblue;
+    --primary-background-color: dimgray;
+    --primary-text-color: white;
+    --primary-button-hover-color: lightskyblue;
+}
+
 
 .menu, .main {
     display: flex;
@@ -10,7 +17,8 @@
     align-items: center;
     text-align: center;
     font-family: Arial, sans-serif;
-    color: white;
+    
+    color: var(--primary-text-color);
     gap: 5px;
     padding: 1rem;
 }
@@ -21,9 +29,9 @@
     height: 100px;
     border-radius: 10px;
     font-size: 3rem;
-    color: white;
+    color: var(--primary-text-color);
     border: 5px solid white;
-    background-color: skyblue;
+    background-color: var(--primary-button-background-color);
     white-space: normal;
     text-align: center;
 }
@@ -39,13 +47,13 @@
   margin-bottom: 20px;
   white-space: nowrap;
   border-bottom: 5px solid white;
-  color: white;
+  color: var(--primary-text-color);
   text-align: center;
   padding: 0 20px;
 }
 
 .menu-button:hover {
-    background-color: royalblue;
+    background-color: var(--primary-button-hover-color);
     cursor: pointer;
 }
 
@@ -103,17 +111,17 @@
 .listed-deck button {
     width: 100%;
     border: 5px solid white;
-    background-color: skyblue;
+    background-color: var(--primary-button-background-color);
     font-size: 2rem;
     text-align: left;
     padding: 1rem;
     margin-top: 1rem;
     border-radius: 15px;
-    color: white;
+    color: var(--primary-text-color);
     cursor: pointer;
 }
 
 .listed-deck button:hover {
-    background-color: royalblue;
+    background-color: var(--primary-button-hover-color);
 }
 

@@ -1,0 +1,92 @@
+.flashcard-area {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    border: dashed 2px green;
+    padding: 1rem;
+    box-sizing: border-box;
+    color: var(--primary-text-color);
+}
+
+.flashcard-area h1 {
+    padding: 0;
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 80vw;
+    max-width: 500px;
+    height: min(300px, 80vh);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--primary-button-background-color);
+    border: solid 2px white;
+}
+
+.card-header {
+    background-color: rgba(0,0,0,0.1);
+    padding: 0.5rem 1rem;
+    font-weight: bold;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.card-content {
+    flex-grow: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 1rem;
+    font-size: 1.5rem;
+    word-break: break-word;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 400px) {
+    .card-content {
+        display: block;
+        padding: 0.5rem; /* reduce vertical padding */
+    }
+}
+
+.controls {
+    display: flex;
+    gap: 1rem;
+    border: dashed 2px green;
+    max-width: 500px;
+    width: 100%;
+    height: 80px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.controls button {
+    min-width: 80px;
+    max-width: 150px;
+    flex: 1 1 auto;
+    max-height: 80px;
+    border-radius: 15px; 
+    cursor: pointer;
+    color: var(--primary-text-color);
+    background-color: var(--primary-button-background-color);
+    font-size: 1.5rem;
+    border: solid 2px white;
+}
+
+.controls button:hover {
+    background-color: var(--primary-button-hover-color);
+}
+
+.controls button:disabled {
+  background-color: var(--primary-button-background-color);
+  color: var(--primary-text-color);
+  cursor: not-allowed;
+  opacity: 0.8;
+}

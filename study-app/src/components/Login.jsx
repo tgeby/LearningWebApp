@@ -54,8 +54,8 @@ function Login() {
     }
 
     return (
-        <div className="formContent">
-            <h2>Welcome</h2>
+        <div className="menu">
+            <h2 className='title'>Welcome</h2>
             <form className="login-form" onSubmit={HandleLogin}>
                 <input
                 type="text"
@@ -71,11 +71,11 @@ function Login() {
                 placeholder="Enter your password"
                 className="textField"
                 />
-                <button type="submit" className="login-button">Log In</button>
+                <button type="submit" className="menu-button">Log In</button>
                 {loginError && <p>{loginError}</p>}
             </form>
-            <button onClick={HandleSignUp} className="login-button">Sign Up</button>
-            <button onClick={HandleGoogleLogin} className="login-button">Continue with Google</button>
+            <button onClick={HandleSignUp} className="menu-button">Sign Up</button>
+            <button onClick={HandleGoogleLogin} className="menu-button">Continue with Google</button>
         </div>
     );
 }

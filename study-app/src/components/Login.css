@@ -5,7 +5,7 @@
     align-items: center;
     gap: .5rem;
     padding-top: 15px;
-    color: white;
+    color: var(--primary-text-color);
 }
 
 .login-form {
