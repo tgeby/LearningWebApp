@@ -61,7 +61,7 @@ function Flashcards() {
 
         setTimeout(() => {
             setIsFlipping(false);
-        }, 200); // 200ms lockout period before you can flip again
+        }, 650); // 200ms lockout period before you can flip again
     };
 
     const handleNext = () => {
@@ -95,12 +95,28 @@ function Flashcards() {
                     <div>
                         <h1>{deck.name}</h1>
                         {currentCard ? (
-                            <div className='card'>
-                                <div className='card-header'>
-                                    Card: {currentIndex + 1} of {deck.cards.length}
-                                </div>
-                                <div className='card-content'>
-                                    <p>{isFront ? currentCard.front : currentCard.back}</p>
+                            <div className='flip-card'>
+                                <div className={`flip-card-inner ${isFront ? '' : 'flipped'}`}>
+                                    <div className='flip-card-front'>
+                                        <div className='card-header'>
+                                            Card: {currentIndex + 1} of {deck.cards.length}
+                                        </div>
+                                        <div className='card-front'>
+                                            <div className='card-body'>
+                                                <p>{currentCard.front}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='flip-card-back'>
+                                        <div className='card-header'>
+                                            Card: {currentIndex + 1} of {deck.cards.length}
+                                        </div>
+                                        <div className='card-back'>
+                                            <div className='card-body'>
+                                                <p>{currentCard.back}</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         ) : (
