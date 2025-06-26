@@ -1,37 +1,36 @@
 import './Login.css';
 
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 
-function LogIn() {
+function SignUp() {
     const navigate = useNavigate();
     const [loginError, setLoginError] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const HandleLogin = async(e) => {
+    const HandleSignUp = async(e) => {
         e.preventDefault();
         try {
-            await signInWithEmailAndPassword(auth, email, password);
-            console.log("Logged In");
-            navigate('/menu');
+            await createUserWithEmailAndPassword(auth, email, password);
+            console.log("SignUp Done");
+            navigate('menu');
         } catch(error) {
-            const message = error.code === 'auth/invalid-credential'
-                ? 'Invalid email or password.'
-                : error.code === 'auth/invalid-email'
-                ? 'Invalid email'
-                : 'Login failed';
-            setLoginError(message);
-            console.log(error.code);
+            if (error.message.includes('email')) {
+                setLoginError('Invalid email');
+            } else if (error.message.includes('password')) {
+                setLoginError('Password must be at least 6 characters long');
+            }
+            console.log(error);
         }
     }
 
     return (
         <div className="menu">
             <h2 className='title'>Welcome</h2>
-            <form className="login-form" onSubmit={HandleLogin}>
+            <form className="login-form" onSubmit={HandleSignUp}>
                 <input
                 type="text"
                 value={email}
@@ -46,11 +45,11 @@ function LogIn() {
                 placeholder="Enter your password"
                 className="textField"
                 />
-                <button type="submit" className="menu-button">Log In</button>
-                {loginError && <p>{loginError}</p>}
+                <button type="submit" className="menu-button">Sign Up</button>
+                {loginError && <p className='login-error'>{loginError}</p>}
             </form>
         </div>
     );
 }
 
-export default LogIn;
+export default SignUp;

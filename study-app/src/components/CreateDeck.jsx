@@ -1,5 +1,7 @@
 import '../styles/global-styles.css';
 import './CreateDeck.css';
+
+import CardList from './CardList';
 import { useState, useEffect } from "react";
 import { useAuth } from '../context/AuthContext';
 import { db } from '../firebase';
@@ -81,24 +83,6 @@ function CreateDeck() {
         }
     }
 
-    const listCards = currentDeck.map((card, index) => {
-        return (
-            <li key={card.card_id} className="listed-card">
-                <p className='card-text'>Card {index+1}: </p>
-                <div>
-                    <div className='card-text'>
-                        <p>Front:</p> {card.front}
-                    </div>
-                </div>
-                <div>
-                    <div className='card-text'>
-                        <p>Back:</p> {card.back}
-                    </div>
-                </div>
-            </li>
-        );
-    });
-
     return (
         <div className="main">
             <div className="title">
@@ -142,11 +126,9 @@ function CreateDeck() {
             {statusMessage && <p className="status-message">{statusMessage}</p>}
             {currentDeck.length > 0 && (
                 <>
-                    <button type="button" className='wide-button' onClick={handlePublishDeck}>Publish Deck</button>
+                    <button type="button" className='menu-button' onClick={handlePublishDeck}>Publish Deck</button>
                     <p className='deck-title'>{currentName}</p>
-                    <ol className='card-list'>
-                        {listCards}
-                    </ol>
+                    <CardList cards={currentDeck} />
                 </>
             )}
         </div>

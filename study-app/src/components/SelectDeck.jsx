@@ -42,7 +42,7 @@ function SelectDeck() {
                     const foundDecks = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     setDecks(foundDecks);
                 } else {
-                    // where('__name__', 'in', deckIds) only works 
+                    // where('__name__', 'in', deckIds) only works for first ten elements
                     const flashcardSetPromises = deckIds.map(deckId =>
                         getDoc(doc(db, 'flashcard_sets', deckId))
                     );
@@ -69,7 +69,7 @@ function SelectDeck() {
     }
 
     if (error) return <p>{error}</p>;
-    if (loading) return <p>Loading...</p>;
+    if (loading) return <p className='loading'>Loading...</p>;
     if (!mode) return <div>Error: No study mode selected.</div>;
 
     const listDecks = decks.map((deck, index) => {

@@ -2,13 +2,15 @@ import './styles/global-styles.css';
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
-import Login from './components/Login';
+import StartPage from './components/StartPage';
+import LogIn from './components/LogIn';
+import SignUp from './components/SignUp';
 import Menu from './components/Menu';
 import ProtectedRoute from './routes/ProtectedRoute';
 import Layout from './components/Layout';
 import IntervalTimer from './components/IntervalTimer';
 import CreateDeck from './components/CreateDeck';
-import ManageDecks from './components/ManageDecks';
+import EditDeck from './components/EditDeck';
 import StudyMenu from './components/StudyMenu';
 import SelectDeck from './components/SelectDeck';
 import Flashcards from './components/Flashcards';
@@ -20,7 +22,9 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<StartPage />} />
+          <Route path="/login" element={<LogIn />} />
+          <Route path="/signup" element={<SignUp />} />
           <Route 
             path="/menu"
             element={
@@ -65,11 +69,11 @@ function App() {
             }
           />
           <Route
-            path="/manage"
+            path="/edit"
             element={
               <ProtectedRoute>
                 <Layout>
-                  <ManageDecks />
+                  <EditDeck />
                 </Layout>
               </ProtectedRoute>
             }

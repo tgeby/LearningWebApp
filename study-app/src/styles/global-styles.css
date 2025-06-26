@@ -7,6 +7,9 @@
     --primary-background-color: dimgray;
     --primary-text-color: white;
     --primary-button-hover-color: lightskyblue;
+    --border-thin: 1px;
+    --border-medium: 2px;
+    --border-thick: 4px;
 }
 
 
@@ -17,9 +20,8 @@
     align-items: center;
     text-align: center;
     font-family: Arial, sans-serif;
-    
     color: var(--primary-text-color);
-    gap: 5px;
+    gap: 10px;
     padding: 1rem;
 }
 
@@ -30,7 +32,7 @@
     border-radius: 10px;
     font-size: 3rem;
     color: var(--primary-text-color);
-    border: 5px solid white;
+    border: var(--border-medium) solid white;
     background-color: var(--primary-button-background-color);
     white-space: normal;
     text-align: center;
@@ -46,7 +48,7 @@
   height: 100px;
   margin-bottom: 20px;
   white-space: nowrap;
-  border-bottom: 5px solid white;
+  border-bottom: var(--border-thin) solid white;
   color: var(--primary-text-color);
   text-align: center;
   padding: 0 20px;
@@ -90,6 +92,15 @@
     }
 }
 
+.deck-title {
+    font-size: 3rem;
+    text-align: center;
+    padding: 0px;
+    margin: 0px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
 .deck-list {
     list-style: none;
     display: flex;
@@ -99,6 +110,7 @@
     width: 100%;
     padding: 0;
     margin: 0;
+    gap: 10px;
 }
 
 .listed-deck {
@@ -110,12 +122,11 @@
 
 .listed-deck button {
     width: 100%;
-    border: 5px solid white;
+    border: var(--border-medium) solid white;
     background-color: var(--primary-button-background-color);
     font-size: 2rem;
     text-align: left;
     padding: 1rem;
-    margin-top: 1rem;
     border-radius: 15px;
     color: var(--primary-text-color);
     cursor: pointer;
@@ -125,3 +136,13 @@
     background-color: var(--primary-button-hover-color);
 }
 
+.loading {
+    text-align: center;
+    font-size: 3rem;
+    color: var(--primary-text-color);
+}
+
+.login-error {
+    max-width: 200px;
+    word-wrap: break-word;
+}

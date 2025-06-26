@@ -19,7 +19,7 @@ function Menu() {
     }
 
     function handleManage() {
-        navigate("/manage");
+        navigate('/select-deck', { state: {mode: "edit"} });
     }
 
     return (

@@ -1,57 +1,48 @@
 import '../styles/global-styles.css';
 import './Flashcards.css';
 
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
-import { db } from '../firebase';
+import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
-import { useState, useEffect } from 'react';
-import { getDoc, doc } from 'firebase/firestore';
+import { useState, useEffect, useRef } from 'react';
+import {useDeck} from '../hooks/useDeck';
 
 function Flashcards() {
 
     const { user } = useAuth();
 
     const location = useLocation();
-    const navigate = useNavigate();
     const deckId = location.state?.deckId;
+
+    // Deck
     const [deck, setDeck] = useState(null);
+    const {deckData, loading, error} = useDeck(deckId, user);
+
+    // Flashcard state
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isFront, setIsFront] = useState(true);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [isFlipping, setIsFlipping] = useState(false);
     const [isChanging, setIsChanging] = useState(false);
+    const frontRef = useRef(null);
+    const backRef = useRef(null);
 
     useEffect(() => {
-        async function getDeck() {
-            try {
-            const flashcardDeck = await getDoc(doc(db, 'flashcard_sets', deckId));
-
-            if (!flashcardDeck.exists) {
-                setError("Deck not found");
-            } else {
-                setDeck(flashcardDeck.data());
-            }
-            } catch (error) {
-                console.log(error);
-                setError("Failed to load deck");
-            } finally {
-                setLoading(false);
-            }
+        if (deckData) {
+            setDeck(deckData);
         }
-        if (user && deckId) {
-            getDeck();
-        }
-    }, [user]);
+    }, [deckData]);
 
 
-    if (!deckId) {
-        return <Navigate to="/menu" />;
-    }
-    if (loading) return <p>Loading deck...</p>;
+    if (!deckId) return <Navigate to="/menu" />;
+    if (loading) return <p className='loading'>Loading deck...</p>;
     if (error) return <p>{error}</p>;
+    if (!deck || !deck.cards) return <p>Deck data is invalid.</p>;
 
     const currentCard = deck?.cards?.[currentIndex];
+
+    const resetScroll = () => {
+        if (frontRef.current) frontRef.current.scrollTop = 0;
+        if (backRef.current) backRef.current.scrollTop = 0;
+    }
 
     const handleFlip = () => {
         if (isFlipping) return;
@@ -60,6 +51,7 @@ function Flashcards() {
         setIsFront(prev => !prev);
 
         setTimeout(() => {
+            resetScroll();
             setIsFlipping(false);
         }, 650); // 200ms lockout period before you can flip again
     };
@@ -70,6 +62,7 @@ function Flashcards() {
         setCurrentIndex(prev => prev+1);
         setIsChanging(true);
         setIsFront(true);
+        resetScroll();
 
         setTimeout(() => {
             setIsChanging(false);
@@ -82,6 +75,7 @@ function Flashcards() {
         setCurrentIndex(prev => prev-1);
         setIsChanging(true);
         setIsFront(true);
+        resetScroll();
         
         setTimeout(() => {
             setIsChanging(false);
@@ -101,7 +95,7 @@ function Flashcards() {
                                         <div className='card-header'>
                                             Card: {currentIndex + 1} of {deck.cards.length}
                                         </div>
-                                        <div className='card-front'>
+                                        <div className='card-front' ref={frontRef}>
                                             <div className='card-body'>
                                                 <p>{currentCard.front}</p>
                                             </div>
@@ -111,7 +105,7 @@ function Flashcards() {
                                         <div className='card-header'>
                                             Card: {currentIndex + 1} of {deck.cards.length}
                                         </div>
-                                        <div className='card-back'>
+                                        <div className='card-back' ref={backRef}>
                                             <div className='card-body'>
                                                 <p>{currentCard.back}</p>
                                             </div>
@@ -135,7 +129,7 @@ function Flashcards() {
                 </button>
                 <button 
                     type='button' 
-                    disabled={currentIndex >= deck.cards.length}
+                    disabled={!deck?.cards || currentIndex >= deck.cards.length}
                     onClick={handleNext}
                 >
                     Next
@@ -143,7 +137,7 @@ function Flashcards() {
                 <button 
                     type='button' 
                     onClick={handleFlip}
-                    disabled={currentIndex >= deck.cards.length}
+                    disabled={!deck?.cards || currentIndex >= deck.cards.length}
                 >
                     Flip Card
                 </button>

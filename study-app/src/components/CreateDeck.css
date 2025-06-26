@@ -1,57 +1,7 @@
-.listed-card {
-    display: flex;
-    flex-direction: column; 
-    justify-content: center;
-    align-items: left;
-    gap: 30px;
-    padding: 3rem; 
-    margin-bottom: 1rem;
-    background-color: gray;
-    border-radius: 2rem;
-    max-width: 100%;
-    overflow-wrap: break-word;
-    word-break: break-word;
-}
-
-.listed-card p {
-    font-size: 1.5rem;
-    padding: 0px;
-    margin: 0px;
-}
-
-.card-text {
-    font-size: 2rem;
-    margin: 0px;
-    white-space: pre-wrap;
-    text-align: left;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    width: 100%;
-}
-
-.card-text p {
-    font-size: 1rem;
-}
-
-.deck-title {
-    font-size: 3rem;
-    text-align: center;
-}
-
-.card-list {
-  list-style: none;
-  padding: 50px;
-  padding-top: 0px;
-  border-radius: 15px;
-  margin: 0 auto;
-  text-align: center;
-  max-width: 100%;
-}
-
 .deck-name-field {
     padding-bottom: 1rem;
     margin-bottom: 1rem;
-    border-bottom: 2px solid white;
+    border-bottom: var(--border-medium) solid white;
     font-size: 1.5rem;
 }
 
@@ -69,7 +19,7 @@
     max-width: 100%;
     width: fit-content;
     flex-wrap: wrap;
-    border: 5px solid white;
+    border: var(--border-medium) solid white;
 }
 
 .text-fields {
@@ -110,27 +60,10 @@
     border-radius: 10px;
     font-size: 1.5rem;
     color: white;
-    border: 5px solid white;
+    border: var(--border-medium) solid white;
     background-color: royalblue;
     white-space: normal;
     cursor: pointer;
-}
-
-.wide-button {
-    width: 50%;
-    min-width: 300px;
-    border-radius: 10px;
-    font-size: 1.5rem;
-    color: white;
-    border: 5px solid white;
-    background-color: royalblue;
-    white-space: normal;
-    cursor: pointer;
-    margin-top: 20px;
-}
-
-.wide-button:hover {
-    background-color: lightskyblue;
 }
 
 .small-button:hover {
@@ -170,26 +103,11 @@
     .input-text-area {
         max-width: 180px;
     }
-
-    .wide-button {
-        max-width: 150px;
-        min-width: 50px;
-        font-size: 1rem;
-    }
 }
 
 @media (max-width:350px) {
     .text-field {
         flex-direction: column;
-    }
-
-
-    .wide-button {
-        max-width: 75px;
-    }
-
-    .listed-card p {
-        font-size: 1rem;
     }
 
     .card-text {
