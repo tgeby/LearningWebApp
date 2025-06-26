@@ -1,17 +1,8 @@
 .listed-card {
     display: flex;
-    flex-direction: column; 
-    justify-content: center;
-    align-items: left;
+    align-items: center;
     gap: 30px;
-    padding: 3rem; 
-    margin-bottom: 1rem;
-    background-color: var(--primary-button-background-color);
-    border-radius: 2rem;
-    width: 100%;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    border: solid var(--border-thin) white;
+    justify-content: center;
 }
 
 .listed-card p {
@@ -43,4 +34,56 @@
   text-align: center;
   width: 100%;
   max-width: 600px;
+}
+
+.delete-button {
+    height: 80px;
+    width: 80px;
+    border-radius: 10px;
+    background-color: darkred;
+    font-size: 2rem;
+    color: white;
+    border: solid var(--border-thin) white;
+}
+
+.delete-button:hover {
+    background-color: red;
+}
+
+.edit-button {
+    height: 80px;
+    width: 80px;
+    border-radius: 10px;
+    font-size: 2rem;
+    color: var(--primary-text-color);
+    background-color: var(--primary-button-background-color);
+    border: solid var(--border-thin) white;
+}
+
+.edit-button:hover {
+    background-color: var(--primary-button-hover-color);
+}
+
+.card-wrapper {
+    display: flex;
+    flex-direction: column; 
+    justify-content: center;
+    align-items: left;
+    gap: 30px;
+    padding: 3rem; 
+    margin-bottom: 1rem;
+    background-color: var(--primary-button-background-color);
+    border-radius: 2rem;
+    width: 100%;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    border: solid var(--border-thin) white;
+}
+
+.button-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 }

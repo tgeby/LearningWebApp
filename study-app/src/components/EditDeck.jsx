@@ -1,15 +1,16 @@
 import '../styles/global-styles.css';
-import CardList from './CardList';
 
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
 import { useState, useEffect } from 'react';
 import { useDeck } from '../hooks/useDeck';
+import DeckEditor from './DeckEditor';
 
 function EditDeck() {
 
     const { user } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
     const deckId = location.state?.deckId;
     const { deckData, loading, error } = useDeck(deckId, user);
     const [currentName, setCurrentName] = useState('');
@@ -17,6 +18,7 @@ function EditDeck() {
 
     async function handlePublishDeck() {
         console.log('update deck');
+        navigate('/menu');
     }
 
     useEffect(() => {
@@ -36,13 +38,15 @@ function EditDeck() {
         <div className='main'>
             <div className='title'>Edit Deck</div>
 
-            {currentDeck.length > 0 && (
-                <>
-                    <button type="button" className='menu-button' onClick={handlePublishDeck}>Publish Deck</button>
-                    <p className='deck-title'>{currentName}</p>
-                    <CardList cards={currentDeck} />
-                </>
-            )}
+            {currentDeck.length > 0 && 
+                <DeckEditor
+                initialDeck={currentDeck}
+                initialName={currentName}
+                onDeckChange={setCurrentDeck}
+                onNameChange={setCurrentName}
+                onSubmit={handlePublishDeck}
+            />
+            }
         </div>
     );
 }

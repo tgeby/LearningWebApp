@@ -1,10 +1,14 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import CardList from './CardList';
+import './CreateDeck.css';
+
+
 function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameChange, onSubmit }) {
     const [deckName, setDeckName] = useState(initialName);
     const [front, setFront] = useState('');
     const [back, setBack] = useState('');
     const [deck, setDeck] = useState(initialDeck);
+    const [modifyID, setModifyID] = useState(null);
 
     useEffect(() => {
         onDeckChange(deck);
@@ -14,14 +18,41 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
         onNameChange(deckName);
     }, [deckName, onNameChange]);
 
+    const onDelete = useCallback((deleteID) => {
+        setDeck(prev => prev.filter((card, index) => card.card_id !== deleteID));
+    }, []);
+
+    const onEdit = useCallback((editID) => {
+        setModifyID(editID);
+        const cardToEdit = deck.find(card => card.card_id === editID);
+        if (cardToEdit) {
+            setFront(cardToEdit.front);
+            setBack(cardToEdit.back);
+        }
+    }, [deck]);
+
     function handleAddCard() {
         if (!front.trim() || !back.trim()) return;
-        const newCard = {
-            front: front.trim(),
-            back: back.trim(),
-            card_id: crypto.randomUUID()
-        };
-        setDeck(prev => [...prev, newCard]);
+        
+        if (modifyID !== null) {
+            const updatedCard = {
+                front: front.trim(),
+                back: back.trim(),
+                card_id: modifyID
+            };
+
+            setDeck(prev => prev.map((card) => 
+                card.card_id === modifyID ? updatedCard : card
+            ));
+            setModifyID(null);
+        } else {
+            const newCard = {
+                front: front.trim(),
+                back: back.trim(),
+                card_id: crypto.randomUUID()
+            };
+            setDeck(prev => [...prev, newCard]);
+        }
         setFront('');
         setBack('');
     }
@@ -59,7 +90,19 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
                         />
                     </div>
                 </div>
-                <button className="small-button" type="button" onClick={handleAddCard}>Add Card</button>
+                {modifyID !== null &&
+                    <button
+                        className="small-button"
+                        onClick={() => {
+                            setModifyID(null);
+                            setFront('');
+                            setBack('');
+                        }}
+                    >
+                        Cancel Edit
+                    </button>
+                }
+                <button className="small-button" type="button" onClick={handleAddCard}>{modifyID === null ? 'Add Card' : 'Update Card'}</button>
             </div>
             <button 
                 className='menu-button' 
@@ -69,7 +112,7 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
             >
                 Submit Deck
             </button>
-            {deck.length > 0 && <CardList cards={deck} />}
+            {deck.length > 0 && <CardList cards={deck} onDelete={onDelete} onEdit={onEdit}/>}
         </>
     );
 }
