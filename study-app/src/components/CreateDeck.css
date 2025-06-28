@@ -1,7 +1,7 @@
 .deck-name-field {
     padding-bottom: 1rem;
     margin-bottom: 1rem;
-    border-bottom: var(--border-medium) solid white;
+    border-bottom: var(--border-medium) solid var(--accent);
     font-size: 1.5rem;
 }
 
@@ -19,7 +19,7 @@
     max-width: 100%;
     width: fit-content;
     flex-wrap: wrap;
-    border: var(--border-medium) solid white;
+    border: var(--border-medium) solid var(--accent);
 }
 
 .text-fields {
@@ -60,15 +60,15 @@
     height: 80px;
     border-radius: 10px;
     font-size: 1.5rem;
-    color: white;
-    border: var(--border-medium) solid white;
-    background-color: royalblue;
+    color: var(--primary-text-color);
+    border: var(--border-medium) solid var(--accent);
+    background-color: var(--primary-button-background-color);
     white-space: normal;
     cursor: pointer;
 }
 
 .small-button:hover {
-    background-color: lightskyblue;
+    background-color: var(--primary-button-hover-color);
 }
 
 .input {

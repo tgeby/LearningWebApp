@@ -3,10 +3,12 @@
 }
 
 :root {
-    --primary-button-background-color: royalblue;
+    --primary-button-background-color: #FFCB05;
     --primary-background-color: dimgray;
-    --primary-text-color: white;
-    --primary-button-hover-color: lightskyblue;
+    --primary-text-color: black;
+    --primary-button-hover-color: #FFD54F;
+    --accent: black;
+    --highlight: #8D6E63;
     --border-thin: 1px;
     --border-medium: 2px;
     --border-thick: 4px;
@@ -32,7 +34,7 @@
     border-radius: 10px;
     font-size: 3rem;
     color: var(--primary-text-color);
-    border: var(--border-medium) solid white;
+    border: var(--border-medium) solid var(--accent);
     background-color: var(--primary-button-background-color);
     white-space: normal;
     text-align: center;
@@ -48,7 +50,7 @@
   height: 100px;
   margin-bottom: 20px;
   white-space: nowrap;
-  border-bottom: var(--border-thin) solid white;
+  border-bottom: var(--border-thin) solid var(--accent);
   color: var(--primary-text-color);
   text-align: center;
   padding: 0 20px;
@@ -122,7 +124,7 @@
 
 .listed-deck button {
     width: 100%;
-    border: var(--border-medium) solid white;
+    border: var(--border-medium) solid var(--accent);
     background-color: var(--primary-button-background-color);
     font-size: 2rem;
     text-align: left;
