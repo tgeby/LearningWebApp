@@ -38,6 +38,7 @@ function Flashcards() {
     if (!deck || !deck.cards) return <p>Deck data is invalid.</p>;
 
     const currentCard = deck?.cards?.[currentIndex];
+    const FLIP_DURATION_MS = 300;
 
     const resetScroll = () => {
         if (frontRef.current) frontRef.current.scrollTop = 0;
@@ -53,33 +54,38 @@ function Flashcards() {
         setTimeout(() => {
             resetScroll();
             setIsFlipping(false);
-        }, 650); // 200ms lockout period before you can flip again
+        }, FLIP_DURATION_MS); // 200ms lockout period before you can flip again
     };
 
     const handleNext = () => {
         if (isChanging) return;
         
-        setCurrentIndex(prev => prev+1);
+        const delay = isFront ? 100 : FLIP_DURATION_MS;
+
         setIsChanging(true);
         setIsFront(true);
         resetScroll();
 
         setTimeout(() => {
+            setCurrentIndex(prev => prev+1);
             setIsChanging(false);
-        }, 200);
+        }, delay);
     };
 
     const handleBack = () => {
         if (isChanging || currentIndex === 0) return;
 
-        setCurrentIndex(prev => prev-1);
+        const delay = isFront ? 100 : FLIP_DURATION_MS;
+
         setIsChanging(true);
         setIsFront(true);
         resetScroll();
         
+
         setTimeout(() => {
+            setCurrentIndex(prev => prev-1);
             setIsChanging(false);
-        }, 200);
+        }, delay);  
     };
 
     return (
@@ -97,7 +103,9 @@ function Flashcards() {
                                         </div>
                                         <div className='card-front' ref={frontRef}>
                                             <div className='card-body'>
-                                                <p>{currentCard.front}</p>
+                                                {!isChanging &&
+                                                    <p className={isChanging ? 'hidden' : ''}>{currentCard.front}</p>
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -107,7 +115,9 @@ function Flashcards() {
                                         </div>
                                         <div className='card-back' ref={backRef}>
                                             <div className='card-body'>
-                                                <p>{currentCard.back}</p>
+                                                {!isChanging &&
+                                                    <p className={isChanging ? 'hidden' : ''}>{currentCard.back}</p>
+                                                }
                                             </div>
                                         </div>
                                     </div>
