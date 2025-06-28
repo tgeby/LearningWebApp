@@ -16,7 +16,7 @@ function SignUp() {
         try {
             await createUserWithEmailAndPassword(auth, email, password);
             console.log("SignUp Done");
-            navigate('menu');
+            navigate('/');
         } catch(error) {
             if (error.message.includes('email')) {
                 setLoginError('Invalid email');
