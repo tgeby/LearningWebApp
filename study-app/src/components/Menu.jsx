@@ -29,7 +29,7 @@ function Menu() {
             </div>
             <button className="menu-button" onClick={handleStudy}>Study</button>
             <button className="menu-button" onClick={handleCreate}>Create</button>
-            <button className="menu-button" onClick={handleManage}>Manage</button>
+            <button className="menu-button" onClick={handleManage}>Edit Decks</button>
             <button className="menu-button" onClick={handleTimer}>Interval Timer</button>
         </div>
     );
