@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import CardList from './CardList';
 import './CreateDeck.css';
 
@@ -9,6 +9,7 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
     const [back, setBack] = useState('');
     const [deck, setDeck] = useState(initialDeck);
     const [modifyID, setModifyID] = useState(null);
+    const editorRef = useRef(null);
 
     useEffect(() => {
         onDeckChange(deck);
@@ -28,6 +29,7 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
         if (cardToEdit) {
             setFront(cardToEdit.front);
             setBack(cardToEdit.back);
+            editorRef.current?.scrollIntoView({ behavior: 'smooth' });
         }
     }, [deck]);
 
@@ -59,7 +61,7 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
 
     return (
         <>
-            <div className="deck-name-field">
+            <div className="deck-name-field" ref={editorRef}>
                 <span>Name: </span>
                 <input
                     className="input"

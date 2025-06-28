@@ -1,8 +1,10 @@
 .listed-card {
     display: flex;
-    align-items: center;
     gap: 30px;
-    justify-content: center;
+    justify-content: flex-start;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
 }
 
 .listed-card p {
@@ -19,10 +21,20 @@
     overflow-wrap: break-word;
     word-break: break-word;
     width: 100%;
+    height: 100%;
+    overflow-y: auto;
 }
 
 .card-text p {
     font-size: 1rem;
+}
+
+.text-scroll {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 10px;
+    white-space: pre-wrap;
+    word-break: break-word;
 }
 
 .card-list {
@@ -33,7 +45,7 @@
   margin: 0 auto;
   text-align: center;
   width: 100%;
-  max-width: 600px;
+  max-width: 900px;
 }
 
 .delete-button {
@@ -67,7 +79,6 @@
 .card-wrapper {
     display: flex;
     flex-direction: column; 
-    justify-content: center;
     align-items: left;
     gap: 30px;
     padding: 3rem; 
@@ -75,8 +86,6 @@
     background-color: var(--primary-button-background-color);
     border-radius: 2rem;
     width: 100%;
-    overflow-wrap: break-word;
-    word-break: break-word;
     border: solid var(--border-thin) white;
 }
 

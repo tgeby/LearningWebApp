@@ -10,12 +10,14 @@ function CardList({ cards, onDelete=null, onEdit=null }) {
                     <p className='card-text'>Card {index+1}: </p>
                     <div>
                         <div className='card-text'>
-                            <p>Front:</p> {card.front}
+                            <p>Front:</p> 
+                            <div className='text-scroll'>{card.front}</div>
                         </div>
                     </div>
                     <div>
                         <div className='card-text'>
-                            <p>Back:</p> {card.back}
+                            <p>Back:</p> 
+                            <div className='text-scroll'>{card.back}</div>
                         </div>
                     </div>
                 </div>
