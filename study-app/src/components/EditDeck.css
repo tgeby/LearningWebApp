@@ -1,0 +1,37 @@
+.top-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 700px;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.title-edit-deck {
+    justify-self: center;
+    text-align: center;
+    font-size: 5rem;
+    white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+    .top-row {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        justify-items: center;
+    }
+
+    .title-edit-deck {
+        font-size: 3rem;
+        white-space: normal;
+    }
+
+    .small-button {
+        font-size: 1.5rem;
+        height: auto;
+        padding: 0.5rem 1rem;
+        max-width: 150px;
+    }
+}

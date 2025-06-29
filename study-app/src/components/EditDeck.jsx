@@ -1,4 +1,5 @@
 import '../styles/global-styles.css';
+import './EditDeck.css'
 
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
@@ -6,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { useDeck } from '../hooks/useDeck';
 import DeckEditor from './DeckEditor';
 import { db } from '../firebase';
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { doc, serverTimestamp, setDoc, deleteDoc } from 'firebase/firestore';
 
 function EditDeck() {
 
@@ -20,6 +21,7 @@ function EditDeck() {
     const [statusMessage, setStatusMessage] = useState('');
 
     async function handlePublishDeck() {
+        if (!user || !deckId) return;
         console.log('update deck');
         if (!deckId) {
             console.log('tried to upload a deck with no deckID');
@@ -42,6 +44,24 @@ function EditDeck() {
         } 
     }
 
+    async function handleDeleteDeck() {
+        if (!user || !deckId) return;
+        console.log('Deleting deck with id: ', deckId);
+        // delete flashcard_sets entry and owned_decks entry
+        try {
+            await deleteDoc(doc(db, 'flashcard_sets', deckId));
+            await deleteDoc(doc(db, 'owned_decks', deckId));
+
+            setStatusMessage('Deck deleted');
+            setTimeout(() => {
+                navigate('/menu');
+            }, 1500);
+        } catch (error) {
+            console.log('Error deleting deck: ', error);
+            setStatusMessage('Failed to delete deck or ownership entry');
+        }
+    }
+
     useEffect(() => {
         if (deckData) {
             setCurrentDeck(deckData.cards || []);
@@ -57,7 +77,21 @@ function EditDeck() {
 
     return (
         <div className='main'>
-            <div className='title'>Edit Deck</div>
+            <div className='top-row'>
+                <button
+                    className='small-button' 
+                    onClick={() => {
+                        const confirmDelete = window.confirm('Are you sure you want to delete this deck?');
+                        if (confirmDelete) {
+                            handleDeleteDeck();
+                        }
+                    }}
+                    disabled={statusMessage ? true : false}
+                >
+                    Delete Deck
+                </button>
+                <div className='title-edit-deck'>Edit Deck ({currentDeck.length} cards)</div>
+            </div>
             {statusMessage && <p className="status-message">{statusMessage}</p>}
 
             {currentDeck.length > 0 && 
