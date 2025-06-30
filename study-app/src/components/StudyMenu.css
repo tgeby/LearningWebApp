@@ -1,0 +1,3 @@
+button.menu-button.disabled {
+    cursor: not-allowed;
+}
