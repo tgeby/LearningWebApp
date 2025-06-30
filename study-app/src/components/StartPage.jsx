@@ -1,3 +1,6 @@
+import '../styles/global-styles.css'
+import './StartPage.css'
+
 import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 import { auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
@@ -29,7 +32,9 @@ function StartPage() {
 
     return (
         <div className="menu">
-            <h2 className='title'>Welcome</h2>
+            <img src="/teabee512.png" alt="TeaBee Logo" width={128} height={128} />
+            <h2 className='title'>TeaBee Study Center</h2>
+            {loginError && <p>{loginError}</p>}
             <button onClick={HandleGoogleLogin} className="menu-button">Continue with Google</button>
             <button onClick={HandleLogIn} className="menu-button">Log In</button>
             <button onClick={HandleSignUp} className="menu-button">Sign Up</button>

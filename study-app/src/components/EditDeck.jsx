@@ -72,7 +72,14 @@ function EditDeck() {
     if (!deckId) {
         return <Navigate to="/menu" />;
     }
-    if (loading) return <p className='loading'>Loading deck...</p>;
+    if (loading) {
+        return (
+            <div className='menu'>
+                <img src="/teabee512.png" alt="TeaBee Logo" width={128} height={128} />
+                <p className='loading'>Loading...</p>;
+            </div>
+        )
+    }
     if (error) return <p>{error}</p>;
 
     return (

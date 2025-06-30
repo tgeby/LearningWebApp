@@ -69,7 +69,14 @@ function SelectDeck() {
     }
 
     if (error) return <p>{error}</p>;
-    if (loading) return <p className='loading'>Loading...</p>;
+    if (loading) {
+        return (
+            <div className='menu'>
+                <img src="/teabee512.png" alt="TeaBee Logo" width={128} height={128} />
+                <p className='loading'>Loading...</p>;
+            </div>
+        )
+    }
     if (!mode) return <div>Error: No study mode selected.</div>;
 
     const listDecks = decks.map((deck, index) => {

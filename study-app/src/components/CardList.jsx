@@ -27,7 +27,7 @@ function CardList({ cards, onDelete=null, onEdit=null }) {
                             onClick={() => onDelete(card.card_id)}
                             className='delete-button'
                         >
-                            X
+                            🗑️
                         </button>
                     }
                     {onEdit &&

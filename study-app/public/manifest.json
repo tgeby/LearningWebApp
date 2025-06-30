@@ -3,12 +3,12 @@
   "name": "TeaBee's Study Center",
   "icons": [
     {
-      "src": "teabee192.png",
+      "src": "simple192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "teabee512.png",
+      "src": "simple512.png",
       "type": "image/png",
       "sizes": "512x512"
     }

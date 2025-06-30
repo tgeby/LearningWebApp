@@ -32,9 +32,11 @@
 .text-scroll {
     max-height: 300px;
     overflow-y: auto;
+    padding: 5px;
     padding-right: 10px;
     white-space: pre-wrap;
     word-break: break-word;
+    border: solid var(--border-thin) var(--accent);
 }
 
 .card-list {
@@ -54,12 +56,12 @@
     border-radius: 10px;
     background-color: darkred;
     font-size: 2rem;
-    color: white;
-    border: solid var(--border-thin) white;
+    color: var(--accent);
+    border: solid var(--border-thin) var(--accent);
 }
 
 .delete-button:hover {
-    background-color: red;
+    background-color: #B22222;
 }
 
 .edit-button {
@@ -69,7 +71,7 @@
     font-size: 2rem;
     color: var(--primary-text-color);
     background-color: var(--primary-button-background-color);
-    border: solid var(--border-thin) white;
+    border: solid var(--border-thin) var(--accent);
 }
 
 .edit-button:hover {
@@ -86,7 +88,7 @@
     background-color: var(--primary-button-background-color);
     border-radius: 2rem;
     width: 100%;
-    border: solid var(--border-thin) white;
+    border: solid var(--border-thin) var(--accent);
 }
 
 .button-area {

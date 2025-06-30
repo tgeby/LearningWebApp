@@ -46,14 +46,12 @@
   align-items: center;
   font-size: 5rem;
   width: 100%;
-  max-width: 500px;
-  height: 100px;
+  max-width: 900px;
   margin-bottom: 20px;
-  white-space: nowrap;
-  border-bottom: var(--border-thin) solid var(--accent);
   color: var(--primary-text-color);
   text-align: center;
   padding: 0 20px;
+  text-wrap: break-word;
 }
 
 .menu-button:hover {
@@ -140,7 +138,7 @@
 
 .loading {
     text-align: center;
-    font-size: 3rem;
+    font-size: 4rem;
     color: var(--primary-text-color);
 }
 
