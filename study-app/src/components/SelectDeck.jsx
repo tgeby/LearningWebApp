@@ -80,7 +80,7 @@ function SelectDeck() {
     if (!mode) return <div>Error: No study mode selected.</div>;
 
     const listDecks = decks.map((deck, index) => {
-        console.log(deck);
+        // console.log(deck);
         return (
             <li key={deck.id} className='listed-deck'>
                 <button onClick={() => handleDeckSelect(deck.id)} type="button">{index + 1}: {deck.name}</button>

@@ -46,7 +46,7 @@ function EditDeck() {
 
     async function handleDeleteDeck() {
         if (!user || !deckId) return;
-        console.log('Deleting deck with id: ', deckId);
+        // console.log('Deleting deck with id: ', deckId);
         // delete flashcard_sets entry and owned_decks entry
         try {
             await deleteDoc(doc(db, 'flashcard_sets', deckId));

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import CardList from './CardList';
 import './CreateDeck.css';
-
+import './DeckEditor.css';
 
 function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameChange, onSubmit }) {
     const [deckName, setDeckName] = useState(initialName);
@@ -10,6 +10,8 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
     const [deck, setDeck] = useState(initialDeck);
     const [modifyID, setModifyID] = useState(null);
     const editorRef = useRef(null);
+    const [useMassUpload, setUseMassUpload] = useState(false);
+    const [massUploadText, setMassUploadText] = useState('');
 
     useEffect(() => {
         onDeckChange(deck);
@@ -57,6 +59,26 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
         }
         setFront('');
         setBack('');
+    }
+
+    function handleMassUpload() {
+        console.log("Mass uploading");
+        try {
+            const parsed = JSON.parse(massUploadText);
+            const validCards = parsed.filter(card =>
+            card.front && card.back
+            ).map(card => ({
+            front: card.front.trim(),
+            back: card.back.trim(),
+            card_id: crypto.randomUUID()
+            }));
+            
+            setDeck(prev => [...prev, ...validCards]);
+            setMassUploadText('');
+            setUseMassUpload(false);
+        } catch (err) {
+            alert('Invalid JSON. Please check the format.');
+        }
     }
 
     return (
@@ -114,6 +136,89 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
             >
                 Submit Deck
             </button>
+
+            {!useMassUpload && 
+                <button
+                    onClick={() => {setUseMassUpload(true);}}
+                    className='menu-button'
+                >
+                    Use Mass Upload
+                </button>    
+            }
+            {useMassUpload && 
+            <>
+                <pre className='mass-upload-instructions'>
+                {`Below you can mass upload decks in the form:
+[
+{
+    "front": "put card front text here",
+    "back": "put card back text here"
+},
+{
+    "front": "put card front text here",
+    "back": "put card back text here"
+}
+...
+]`
+            }
+            </pre>
+
+            <pre className='mass-upload-instructions'>
+            {`You can have ChatGPT or another LLM generate the cards in this format using a query like this:
+            
+Could you give me flashcards for the first unit of calc 1 in the following format
+[
+{
+    "front": "put card front text here",
+    "back": "put card back text here"
+},
+{
+    "front": "put card front text here",
+    "back": "put card back text here"
+}
+...
+]`
+                }
+                </pre>
+                <div className="mass-upload-text-field">
+                        <p>Input area: </p>
+                        <br/>
+                        <textarea
+                            className="mass-input-text-area"
+                            placeholder="Formatted cards"
+                            value={massUploadText}
+                            onChange={(e) => setMassUploadText(e.target.value)}
+                        />
+                    </div>
+                <div className='mass-upload-controls'>
+                    <button
+                        onClick={() => {
+                            if (massUploadText.length === 0) {
+                                setUseMassUpload(false);
+                            } else {
+                                const confirmExit = window.confirm('Are you sure you want to exit? Your work will be lost.');
+                            
+                                if (confirmExit) {
+                                    setUseMassUpload(false);
+                                    setMassUploadText('');
+                                }
+                            }
+                        }}
+                        className='small-button'
+                    >
+                        Cancel Mass Upload
+                    </button>    
+                    
+                    <button
+                        className='small-button'
+                        onClick={() => handleMassUpload()}
+                    >
+                        Submit Mass Upload
+                    </button>  
+                </div>
+            </>
+            }
+
             {deck.length > 0 && <CardList cards={deck} onDelete={onDelete} onEdit={onEdit}/>}
         </>
     );

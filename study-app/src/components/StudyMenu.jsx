@@ -18,11 +18,11 @@ function StudyMenu() {
                 Study Mode
             </div>
             <button type="button" className="menu-button" onClick={() => handleModeSelect('flashcards')}>Flashcards</button>
-            <button type="button" className="menu-button disabled" onClick={() => handleModeSelect('memory-game')} disabled='true'>
+            <button type="button" className="menu-button disabled" onClick={() => handleModeSelect('memory-game')} disabled={true}>
                 Memory Game
                 <p style={{ fontSize: '1rem', opacity: 0.7 }}>Coming soon...</p>
             </button>
-            <button type="button" className="menu-button disabled" onClick={() => handleModeSelect('test')} disabled='true'>
+            <button type="button" className="menu-button disabled" onClick={() => handleModeSelect('test')} disabled={true}>
                 Test
                 <p style={{ fontSize: '1rem', opacity: 0.7 }}>Coming soon...</p>
             </button>
