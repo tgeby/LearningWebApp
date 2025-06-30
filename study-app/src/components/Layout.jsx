@@ -1,5 +1,5 @@
 import './Layout.css';
-import logo from '../logo.svg';
+import homeIcon from '../home.svg';
 
 import { useAuth } from '../context/AuthContext';
 import { signOut } from 'firebase/auth';
@@ -21,7 +21,7 @@ function Layout({ children }) {
 
         const content = (
             <>
-                <img className="header-image" src={logo} alt="react logo" />
+                <img className="header-image" src={homeIcon} alt="home icon" />
                 <h1 className="header-title">Study Center</h1>
             </>
         );
