@@ -218,7 +218,7 @@ Could you give me flashcards for the first unit of calc 1 in the following forma
                 </div>
             </>
             }
-
+            {deckName.length > 0 && <p className='deck-title'>{deckName}</p>}
             {deck.length > 0 && <CardList cards={deck} onDelete={onDelete} onEdit={onEdit}/>}
         </>
     );

@@ -4,7 +4,7 @@
 
 :root {
     --primary-button-background-color: #FFCB05;
-    --primary-background-color: dimgray;
+    --primary-background-color: lightgray;
     --primary-text-color: black;
     --primary-button-hover-color: #FFD54F;
     --accent: black;
@@ -59,46 +59,15 @@
     cursor: pointer;
 }
 
-@media (max-width: 900px) {
-    .title {
-        font-size: 4rem;
-    }
-
-    .menu-button {
-        font-size: 2.5rem;
-        height: 80px;
-    }
-}
-
-@media (max-width: 600px) {
-    .title {
-        font-size: 3rem;
-    }
-
-    .menu-button {
-        font-size: 2rem;
-        height: 70px;
-    }
-}
-
-@media (max-width: 400px) {
-    .title {
-        font-size: 2.2rem;
-    }
-
-    .menu-button {
-        font-size: 1.5rem;
-        height: 60px;
-    }
-}
-
 .deck-title {
     font-size: 3rem;
     text-align: center;
     padding: 0px;
-    margin: 0px;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    margin: 20px 0 10px 0;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    overflow: auto;
 }
 
 .deck-list {
@@ -145,4 +114,46 @@
 .login-error {
     max-width: 200px;
     word-wrap: break-word;
+}
+
+
+@media (max-width: 900px) {
+    .title {
+        font-size: 4rem;
+    }
+
+    .menu-button {
+        font-size: 2.5rem;
+        height: 80px;
+    }
+}
+
+@media (max-width: 600px) {
+    .title {
+        font-size: 3rem;
+    }
+
+    .menu-button {
+        font-size: 2rem;
+        height: 70px;
+    }
+
+    .deck-title {
+        font-size: 2rem;
+    }
+
+    .main, .menu {
+        margin: 0;
+    }
+}
+
+@media (max-width: 400px) {
+    .title {
+        font-size: 2.2rem;
+    }
+
+    .menu-button {
+        font-size: 1.5rem;
+        height: 60px;
+    }
 }

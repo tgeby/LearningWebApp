@@ -1,35 +1,70 @@
 .input {
     font-size: 1.5rem;
     text-align: left;
+    border: solid var(--border-medium) var(--accent);
+    padding: 15px;
+    color: var(--accent);
+    width: 200px;
+}
+
+.inputCol {
+    display: flex;
+    flex-direction: column;
+}
+
+.inputCol p {
+    font-size: 2rem;
+    padding: 5px;
+    margin: 5px;
 }
 
 .buttons {
     display: flex;
     gap: 10px;
     justify-content: center;
-    padding: 10px;
+    padding: 25px;
+    border-radius: 15px;
+    background-color: gray;
+    border: solid var(--border-medium) var(--accent);
+    margin-top: 10px;
 }
 
 .interval-list {
     display: flex;
     justify-content: center;
     margin-top: 10px;
-    padding: 15px;
-    background-color: silver;
+    padding: 25px;
+    background-color: gray;
+    border: solid var(--border-medium) var(--accent);
     border-radius: 15px;
+    margin: 10px auto;
+    width: 100%;
+    max-width: 350px;
 }
 
 .interval-list ol {
+    display: flex;
+    flex-direction: column;
     list-style: none;
     padding: 0px;
+    margin: 0px;
+    gap: 15px;
 }
 
 .interval-list li {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    padding: 0px;
+    margin: 0px;
+}
+
+.interval-list p {
+    padding: 15px;
+    margin: 0px;
 }
 
 .interval-list button {
     background-color: var(--primary-button-background-color);
+    border: solid var(--border-medium) var(--accent);
     width: 200px;
     height: 50px;
     border-radius: 10px;
@@ -38,5 +73,24 @@
 
 .interval-list button:hover {
     background-color: var(--primary-button-hover-color);
+    border: solid var(--border-medium) var(--accent);
     cursor: pointer;
+}
+
+.interval-title {
+    font-size: 3rem;
+    margin-bottom: 5px;
+}
+
+.instructions {
+    font-size: 18pt;
+    color: black;
+}
+
+.timer-display {
+    margin-top: 10px;
+    padding: 25px;
+    background-color: gray;
+    border: solid var(--border-medium) var(--accent);
+    border-radius: 15px;
 }

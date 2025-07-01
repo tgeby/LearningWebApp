@@ -14,7 +14,7 @@
 }
 
 .card-text {
-    font-size: 2rem;
+    font-size: 1rem;
     margin: 0px;
     white-space: pre-wrap;
     text-align: left;
@@ -85,6 +85,7 @@
     gap: 30px;
     padding: 3rem; 
     margin-bottom: 1rem;
+    margin-top: 1rem;
     background-color: var(--primary-button-background-color);
     border-radius: 2rem;
     width: 100%;
@@ -97,4 +98,26 @@
     justify-content: center;
     align-items: center;
     gap: 10px;
+}
+
+@Media (max-width: 600px) {
+    .listed-card {
+        flex-direction: column;
+        margin: 5px;
+        gap: 0px;
+    }
+    .card-wrapper {
+        padding: 1rem;
+        border-radius: 0px;
+    }
+    .button-area {
+        flex-direction: row;
+    }
+    .card-text {
+        font-size: 1rem;
+    }
+    .card-list {
+        margin: 0px;
+        padding: 0px;
+    }
 }
