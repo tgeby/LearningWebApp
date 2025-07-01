@@ -1,4 +1,5 @@
-
+import "../styles/global-styles.css";
+import "./IntervalTimer.css";
 
 import { useEffect, useRef, useState } from "react";
 
@@ -9,18 +10,11 @@ function IntervalTimer() {
     const [currentWorkTime, setCurrentWorkTime] = useState('');
     // Timer management
     const [currentIndex, setCurrentIndex] = useState(0);
-    const [phase, setPhase] = useState("work"); // "work" or "rest"
-    const [remainingTime, setRemainingTime] = useState(null); // in ms
-    const [isRunning, setIsRunning] = useState(false);
-    const [paused, setPaused] = useState(false);
-    const [resuming, setResuming] = useState(false);
-    // Show time
-    const [displayTime, setDisplayTime] = useState(null);
-    const intervalRef = useRef(null);
-
-    const timerId = useRef(null);
-    const pauseTimestamp = useRef(null);
-    const endTimestamp = useRef(null);
+    const [phase, setPhase] = useState(null); // null or "work" or "rest"
+    const [pauseTime, setPauseTime] = useState(null);
+    const nextEndTime = useRef(null); // in ms
+    // Timer display
+    const [timeRemaining, setTimeRemaining] = useState(0); // in ms
 
     useEffect(() => {
         if ("Notification" in window) {
@@ -33,99 +27,75 @@ function IntervalTimer() {
     }, []);
 
     function showNotification(title, body) {
+        console.log("Show notification called");
         if (Notification.permission === "granted") {
-            new Notification(title, { body, requireInteraction: false });
+            console.log("Permission granted");
+            new Notification(title, 
+                { 
+                    body, 
+                    requireInteraction: false,
+                    icon: "/favicon.ico",
+                    silent: false
+                });
         }
     }
-
-    function startPhase(durationMs) {
-        const now = Date.now();
-        endTimestamp.current = now + durationMs;
-        //setRemainingTime(durationMs);
-        clearTimeout(timerId.current);
-        clearInterval(intervalRef.current);
-        startDisplayCountdown(durationMs);
-
-        timerId.current = setTimeout(() => {
     
-            if (currentIndex === intervals.length-1 && phase=== "rest") {
-                showNotification("All intervals completed!");
-                clearInterval(intervalRef.current);
-                setIsRunning(false);
-                return;
-            } else {
-                showNotification(`End of ${phase} phase ${currentIndex + 1}`);
-            }
-            clearInterval(intervalRef.current);
-            if (phase === "work") {
-                setPhase("rest");
-            } else {
-                setPhase("work");
-                setCurrentIndex((i) => i + 1);
-            }
-        }, durationMs);
-
-        setIsRunning(true);
-        setPaused(false);
-    }
-
     useEffect(() => {
-        if (!isRunning || paused) return;
+        // Timer updates
+        if (!phase || currentIndex >= intervals.length) return;
 
-        let duration;
-        if (resuming && remainingTime) {
-            duration = remainingTime;
-            setRemainingTime(null);
-            setResuming(false);
-        } else {
-            const [work, rest] = intervals[currentIndex];
-            duration = phase === "work" ? parseInt(work) * 1000 : parseInt(rest) * 1000;
-        }
-        
-        startPhase(duration);
+        const intervalId = setInterval(() => {
+            if (pauseTime || !nextEndTime.current) return;
 
-        return () => {
-            clearTimeout(timerId.current);
-            clearInterval(intervalRef.current);
-        };
-    }, [currentIndex, phase, isRunning, paused]);
+            const remaining = nextEndTime.current - Date.now();
+
+            if (remaining <= 0) {
+                if (currentIndex >= intervals.length - 1 && phase === 'rest') {
+                    showNotification(`End of set: ${currentIndex + 1}, phase: ${phase}`, 'All sets complete! Great job!');
+                    handleReset();
+                    return;
+                } else {
+                    showNotification(`End of set: ${currentIndex + 1}, phase: ${phase}`, 'On to the next set!');
+                    const nextPhase = phase === 'work' ? 'rest' : 'work';
+                    if (phase === 'rest') {
+                        setCurrentIndex(prev => prev + 1)
+                    }
+                    setPhase(nextPhase);
+
+                    const nextIntervalSeconds = parseInt(intervals[currentIndex][nextPhase === 'work' ? 0 : 1]);
+                    nextEndTime.current = Date.now() + nextIntervalSeconds * 1000;
+                }
+            } else {
+                setTimeRemaining(remaining);
+            }
+        }, 200);
+
+        return () => clearInterval(intervalId);
+    }, [phase, currentIndex, pauseTime, intervals]);
 
     function handleStart() {
-        if (!isRunning) {
-            clearTimeout(timerId.current);
-            clearInterval(intervalRef.current);
-            setPhase("work");
-            setCurrentIndex(0);
-            setIsRunning(true);
-        }
+        if (intervals.length === 0) return;
+        setCurrentIndex(0);
+        setPhase('work');
+        nextEndTime.current = Date.now() + intervals[0][0] * 1000;
     }
 
     function handlePause() {
-        if (!isRunning || paused) return;
-        clearTimeout(timerId.current);
-        clearInterval(intervalRef.current);
-        pauseTimestamp.current = Date.now();
-        const remaining = endTimestamp.current - pauseTimestamp.current;
-        setRemainingTime(remaining);
-        setPaused(true);
+        if (pauseTime) return;
+        setPauseTime(new Date());
     }
 
     function handleResume() {
-        if (paused && remainingTime > 0) {
-            setResuming(true);
-            startPhase(remainingTime);
-        }
+        if (!pauseTime) return;
+        nextEndTime.current += Date.now() - pauseTime.getTime();
+        setPauseTime(null);
     }
 
-    function startTimer(e) {
-        // timer logic
-        // async timers with scheduled push notifications
-        // store scheduled timestamps. If the timer is paused, record how long pause is. Add that to each unreached timestamps on play.
-        e.preventDefault();
-        if (intervals.length === 0) {
-            return;
-        }
-        handleStart();
+    function handleReset() {
+        setPauseTime(null);
+        setCurrentIndex(0);
+        setPhase(null);
+        nextEndTime.current = null;
     }
 
     function addInterval(e) {
@@ -149,24 +119,6 @@ function IntervalTimer() {
         setCurrentWorkTime('');
     }
 
-    function handleEnd() {
-        if (!isRunning && !paused) return;
-        clearTimeout(timerId.current);
-        clearInterval(intervalRef.current);
-        setCurrentIndex(0);
-        setPhase('work');
-        setRemainingTime(null);
-        setIsRunning(false);
-        setPaused(false);
-        setDisplayTime(null);
-
-        // unnecessary 
-        intervalRef.current = null;
-        timerId.current = null;
-        pauseTimestamp.current = null;
-        endTimestamp.current = null;
-    }
-
     function deleteIthInterval(i) {
         try {
             const nextIntervals = [...intervals.slice(0,i), ...intervals.slice(i+1)];
@@ -174,21 +126,6 @@ function IntervalTimer() {
         } catch(error) {
             console.log(error);
         }
-    }
-
-    function startDisplayCountdown(durationMs) {
-        const durationSec = Math.ceil(durationMs / 1000);
-        setDisplayTime(durationSec);
-
-        intervalRef.current = setInterval(() => {
-            setDisplayTime(prev => {
-                if (prev <= 1) {
-                    clearInterval(intervalRef.current);
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
     }
 
     const jsxIntervals = intervals.map((intervalPair, index) => {
@@ -201,38 +138,58 @@ function IntervalTimer() {
     });
 
     return (
-        <div>
+        <div className='main'>
             <h1>Enter time intervals in seconds</h1>
             <p>Time intervals under 8 seconds cause delayed notifications since their timeout occurs before the previous notification runs out.</p>
             <div>
-                <form onSubmit={addInterval}>
+                <form onSubmit={addInterval} className='form'>
                     <input 
-                        placeholder="Work Time"
+                        placeholder="Work Time (in seconds)"
+                        className='input'
                         value={currentWorkTime}
                         onChange= {(e) => setCurrentWorkTime(e.target.value)}
                     />
                     <input 
-                        placeholder="Rest Time"
+                        placeholder="Rest Time (in seconds)"
+                        className="input"
                         value={currentRestTime}
                         onChange={(e) => setCurrentRestTime(e.target.value)}
                     />
-                    <button type="submit">Add interval</button>
+                    <button type="submit" className="small-button">Add interval</button>
+                </form>
+
+                <div className="interval-list">
                     <ol>
                         {jsxIntervals}
                     </ol>
-                </form>
-                <button type="button" onClick={handlePause}>Pause</button>
-                <button type="button" onClick={handleResume}>Resume</button>
-                <button type="button" onClick={startTimer}>Start Timer</button>
-                <button type="button" onClick={handleEnd}>End Timer</button>
+                </div>
+
+                <div className="buttons">
+                    {!pauseTime && phase && 
+                        <button type="button" onClick={handlePause} className="small-button">Pause</button>                    
+                    }
+
+                    {pauseTime && 
+                        <button type="button" onClick={handleResume} className="small-button">Resume</button>                
+                    }
+
+                    {!phase &&                    
+                        <button type="button" onClick={handleStart} className="small-button">Start Timer</button>
+                    }
+
+                    {phase &&
+                        <button type="button" onClick={handleReset} className="small-button">End Timer</button>                    
+                    }
+                </div>
             </div>
-            {isRunning && (
+            {phase && (
                 <div>
                     <h3>{phase.toUpperCase()} phase {currentIndex+1}</h3>
-                    <h1>{displayTime}s remaining</h1>
+                    <h1>{timeRemaining === null ? 'Starting...' : `${Math.ceil(timeRemaining / 1000)}s remaining`}</h1>
                 </div>
             )}
         </div>
+        
     );
 }
 export default IntervalTimer;
