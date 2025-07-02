@@ -31,6 +31,10 @@ function Flashcards() {
         }
     }, [deckData]);
 
+    function handleReset() {
+        setCurrentIndex(0);
+        setIsFront(0);
+    }
 
     if (!deckId) return <Navigate to="/menu" />;
     if (loading) return <p className='loading'>Loading deck...</p>;
@@ -124,7 +128,10 @@ function Flashcards() {
                                 </div>
                             </div>
                         ) : (
+                            <>
                             <p>Complete</p>
+                            <button onClick={handleReset} className='reset-button'>Reset</button>
+                            </>
                         )}
                     </div>)
                 }
