@@ -1,7 +1,7 @@
 import "../styles/global-styles.css";
 import "./IntervalTimer.css";
 import InfoToolTip from './InfoToolTip';
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function IntervalTimer() {
     // Timer specification
@@ -16,31 +16,196 @@ function IntervalTimer() {
     const nextEndTime = useRef(null); // in ms
     // Timer display
     const [timeRemaining, setTimeRemaining] = useState(0); // in ms
+    const [notificationPermission, setNotificationPermission] = useState('default');
 
     useEffect(() => {
         if ("Notification" in window) {
-            Notification.requestPermission().then(permission => {
-                console.log("Notification permission:", permission);
-            });
+
+            setNotificationPermission(Notification.permission);
+
+            if (notificationPermission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    setNotificationPermission(permission);
+                });
+            }
         } else {
-            console.log("Browser does not support notifications.");
+            console.warn("Browser does not support notifications.");
+        }
+    }, [notificationPermission]);
+
+    useEffect(() => {
+        const stored = localStorage.getItem('intervals');
+        if (stored) {
+            try {
+                const parsed = JSON.parse(stored);
+                if (Array.isArray(parsed)) {
+                    setIntervals(parsed);
+                }
+            } catch (error) {
+                console.error("Failed to parse intervals from local storage: ", error);
+            }
+        }
+        const timerState = localStorage.getItem('timer-state');
+        if (timerState) {
+            try {
+                const parsed = JSON.parse(timerState);
+                setCurrentIndex(parsed['currentIndex']);
+                setPhase(parsed['phase']);
+                const restoredPauseTime = parsed['pauseTime'] ? new Date(parsed['pauseTime']) : null;
+                setPauseTime(restoredPauseTime);
+                nextEndTime.current = parsed['nextEndTime']; 
+                if (restoredPauseTime && parsed['nextEndTime']) {
+                    const remaining = parsed['nextEndTime'] - restoredPauseTime.getTime();
+                    setTimeRemaining(remaining > 0 ? remaining : 0);
+                }  
+            } catch (error) {
+                console.log("Failed to parse stored timer state: ", error);
+            }
         }
     }, []);
 
-    function showNotification(title, body) {
-        console.log("Show notification called");
-        if (Notification.permission === "granted") {
-            console.log("Permission granted");
-            new Notification(title, 
-                { 
-                    body, 
-                    requireInteraction: false,
-                    icon: "/favicon.ico",
-                    silent: false
-                });
+    const showNotification = useCallback((title, body) => {
+        if (Notification.permission !== "granted") {
+            console.log("Notifications not permitted");
+
+            Notification.requestPermission().then (permission => {
+                setNotificationPermission(permission);
+                if (permission === 'granted') {
+                    createNotification(title, body);
+                }
+            });
+            return;
+        }
+        createNotification(title, body);
+    }, []);
+
+    function createNotification(title, body) {
+        try {
+            const notification = new Notification(title, {
+                body,
+                icon: "/favicon.ico",
+                requireInteraction: false,
+                silent: false,
+                tag: "interval-timer",
+                renotify: true // if a new notification is triggered before the previous is dismissed, notify again
+            });
+
+            const timeoutId = setTimeout(() => {
+                notification.close();
+            }, 4000);
+
+            notification.onclick = function() {
+                try {
+                    window.focus();
+                    clearTimeout(timeoutId);
+                    this.close();
+                } catch (error) {
+                    console.warn("Error handling notification:", error.message);
+                }
+            };
+
+            notification.onclose = function() {
+                clearTimeout(timeoutId);
+            }
+        } catch (error) {
+            console.error("Failed to create notification:", error);
         }
     }
     
+    const writeTimerState = useCallback(() => {
+        const timerState = {
+            currentIndex: currentIndex,
+            phase: phase,
+            pauseTime: pauseTime?.toISOString() ?? null,
+            nextEndTime: nextEndTime.current,
+        };
+        localStorage.setItem("timer-state", JSON.stringify(timerState));
+    }, [currentIndex, phase, pauseTime]);
+
+    function handleStart() {
+        if (intervals.length === 0) return;
+        setCurrentIndex(0);
+        setPhase('work');
+        const endTime = Date.now() + intervals[0][0] * 1000;
+        nextEndTime.current = endTime;
+        
+        const timerState = {
+            currentIndex: 0,
+            phase: 'work',
+            nextEndTime: endTime,
+            pauseTime: null
+        };
+        localStorage.setItem("timer-state", JSON.stringify(timerState));
+    }
+
+    function handlePause() {
+        if (pauseTime) return;
+        const now = new Date();
+        const remaining = nextEndTime.current - now.getTime();
+
+        setPauseTime(now);
+        setTimeRemaining(remaining);
+
+        const timerState = {
+            currentIndex,
+            phase,
+            pauseTime: now.toISOString(),
+            nextEndTime: nextEndTime.current
+        };
+        localStorage.setItem("timer-state", JSON.stringify(timerState));
+    }
+
+    function handleResume() {
+        if (!pauseTime) return;
+
+        const adjustedEndTime = nextEndTime.current + (Date.now() - pauseTime.getTime());
+        nextEndTime.current = adjustedEndTime;
+        setPauseTime(null);
+
+        const timerState = {
+            currentIndex,
+            phase,
+            pauseTime: null,
+            nextEndTime: adjustedEndTime
+        };
+        localStorage.setItem("timer-state", JSON.stringify(timerState));
+    }
+
+    const handleReset = useCallback(() => {
+        setPauseTime(null);
+        setCurrentIndex(0);
+        setPhase(null);
+        nextEndTime.current = null;
+        setTimeRemaining(0);
+        
+        const timerState = {
+            currentIndex: 0,
+            phase: null,
+            pauseTime: null,
+            nextEndTime: null,
+        };
+        localStorage.setItem("timer-state", JSON.stringify(timerState));
+    }, []);
+
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            writeTimerState();
+        };
+        
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [writeTimerState]);
+
+    useEffect(() => {
+        if (!phase || currentIndex >= intervals.length || pauseTime) return;
+
+        const intervalId = setInterval(() => {
+            writeTimerState();
+        }, 60000);
+        
+        return () => clearInterval(intervalId);
+    }, [phase, currentIndex, pauseTime, writeTimerState, intervals.length]);
+
     useEffect(() => {
         // Timer updates
         if (!phase || currentIndex >= intervals.length) return;
@@ -54,6 +219,7 @@ function IntervalTimer() {
                 if (currentIndex >= intervals.length - 1 && phase === 'rest') {
                     showNotification(`End of set: ${currentIndex + 1}, phase: ${phase}`, 'All sets complete! Great job!');
                     handleReset();
+                    // writeTimerState(); 
                     return;
                 } else {
                     showNotification(`End of set: ${currentIndex + 1}, phase: ${phase}`, 'On to the next set!');
@@ -65,39 +231,17 @@ function IntervalTimer() {
 
                     const nextIntervalSeconds = intervals[currentIndex][nextPhase === 'work' ? 0 : 1];
                     nextEndTime.current = Date.now() + nextIntervalSeconds * 1000;
+                    writeTimerState();
                 }
             } else {
                 setTimeRemaining(remaining);
+                // writeTimerState();
             }
         }, 200);
 
         return () => clearInterval(intervalId);
-    }, [phase, currentIndex, pauseTime, intervals]);
+    }, [phase, currentIndex, pauseTime, intervals, handleReset, writeTimerState, showNotification]);
 
-    function handleStart() {
-        if (intervals.length === 0) return;
-        setCurrentIndex(0);
-        setPhase('work');
-        nextEndTime.current = Date.now() + intervals[0][0] * 1000;
-    }
-
-    function handlePause() {
-        if (pauseTime) return;
-        setPauseTime(new Date());
-    }
-
-    function handleResume() {
-        if (!pauseTime) return;
-        nextEndTime.current += Date.now() - pauseTime.getTime();
-        setPauseTime(null);
-    }
-
-    function handleReset() {
-        setPauseTime(null);
-        setCurrentIndex(0);
-        setPhase(null);
-        nextEndTime.current = null;
-    }
 
     function splitAndSum(intervalString) {
         const split = intervalString.split(":");
@@ -118,6 +262,11 @@ function IntervalTimer() {
         }
     }
 
+    function handleClearIntervals() {
+        localStorage.removeItem('intervals');
+        setIntervals([]);
+    }
+
     function addInterval(e) {
         e.preventDefault();
 
@@ -136,6 +285,7 @@ function IntervalTimer() {
         }
         const nextIntervals = [...intervals, [work, rest]];
         setIntervals(nextIntervals);
+        localStorage.setItem('intervals', JSON.stringify(nextIntervals));
         setCurrentRestTime('');
         setCurrentWorkTime('');
         workInputRef.current?.focus();
@@ -145,8 +295,9 @@ function IntervalTimer() {
         try {
             const nextIntervals = [...intervals.slice(0,i), ...intervals.slice(i+1)];
             setIntervals(nextIntervals);
+            localStorage.setItem('intervals', JSON.stringify(nextIntervals));
         } catch(error) {
-            console.log(error);
+            console.error(error);
         }
     }
 
@@ -174,29 +325,36 @@ function IntervalTimer() {
             </h1>
             
             
-            <form onSubmit={addInterval} className='form'>
-                <div>
-                    <div className="inputCol">
-                        <p>Work Time</p>
+            <form onSubmit={addInterval} className='form' id="interval-specification-form">
+                <div id="text-input-divider">
+                    <div className="inputCol" id="work-time-column">
+                        <p id="work-time-label">Work Time</p>
                         <input 
                             placeholder="ss or mm:ss"
                             className='input'
                             value={currentWorkTime}
                             ref={workInputRef}
+                            id="work-time-input-box"
                             onChange= {(e) => setCurrentWorkTime(e.target.value)}
                         />
                     </div>
-                    <div className="inputCol">
-                        <p>Rest Time</p>
+                    <div className="inputCol" id="rest-time-column">
+                        <p id="rest-time-label">Rest Time</p>
                         <input 
                             placeholder="ss or mm:ss"
                             className="input"
                             value={currentRestTime}
+                            id="rest-time-input-box"
                             onChange={(e) => setCurrentRestTime(e.target.value)}
                         />
                     </div>
                 </div>
-                <button type="submit" className="small-button">Add Interval</button>
+                <div className="form-buttons" id="interval-specification-buttons">
+                    {intervals.length > 0 &&
+                        <button type="button" id="clear-intervals-button" onClick={handleClearIntervals} disabled={intervals.length === 0} className="small-button">Clear Intervals</button>
+                    }
+                    <button type="submit" id="add-interval-button" className="small-button">Add Interval</button>
+                </div>
             </form>
 
             {phase && (
@@ -229,8 +387,7 @@ function IntervalTimer() {
                 <ol>
                     {jsxIntervals}
                 </ol>
-            </div>
-            
+            </div>            
             }
         </div>
         
