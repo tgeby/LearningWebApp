@@ -325,36 +325,28 @@ function IntervalTimer() {
             </h1>
             
             
-            <form onSubmit={addInterval} className='form' id="interval-specification-form">
-                <div id="text-input-divider">
-                    <div className="inputCol" id="work-time-column">
-                        <p id="work-time-label">Work Time</p>
-                        <input 
-                            placeholder="ss or mm:ss"
-                            className='input'
-                            value={currentWorkTime}
-                            ref={workInputRef}
-                            id="work-time-input-box"
-                            onChange= {(e) => setCurrentWorkTime(e.target.value)}
-                        />
-                    </div>
-                    <div className="inputCol" id="rest-time-column">
-                        <p id="rest-time-label">Rest Time</p>
-                        <input 
-                            placeholder="ss or mm:ss"
-                            className="input"
-                            value={currentRestTime}
-                            id="rest-time-input-box"
-                            onChange={(e) => setCurrentRestTime(e.target.value)}
-                        />
-                    </div>
-                </div>
-                <div className="form-buttons" id="interval-specification-buttons">
-                    {intervals.length > 0 &&
-                        <button type="button" id="clear-intervals-button" onClick={handleClearIntervals} disabled={intervals.length === 0} className="small-button">Clear Intervals</button>
-                    }
-                    <button type="submit" id="add-interval-button" className="small-button">Add Interval</button>
-                </div>
+            <form onSubmit={addInterval} className='timer-form' id="interval-specification-form">
+
+                <p className="work-label" id="work-time-label">Work Time</p>
+                <input 
+                    placeholder="ss or mm:ss"
+                    className='input work-time-input'
+                    value={currentWorkTime}
+                    ref={workInputRef}
+                    id="work-time-input-box"
+                    onChange= {(e) => setCurrentWorkTime(e.target.value)}
+                />
+                <p className="rest-label" id="rest-time-label">Rest Time</p>
+                <input 
+                    placeholder="ss or mm:ss"
+                    className="input rest-time-input"
+                    value={currentRestTime}
+                    id="rest-time-input-box"
+                    onChange={(e) => setCurrentRestTime(e.target.value)}
+                />
+
+                <button type="button" id="clear-intervals-button" onClick={handleClearIntervals} disabled={intervals.length === 0} className="small-button clear-interval">Clear Intervals</button>
+                <button type="submit" id="add-interval-button" className="small-button add-interval">Add Interval</button>
             </form>
 
             {phase && (

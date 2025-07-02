@@ -1,3 +1,14 @@
+.timer-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    padding: 25px;
+    background-color: gray;
+    gap: 15px;
+    border-radius: 15px;
+    border: solid var(--border-medium) var(--accent);
+}
+
 .input {
     font-size: 1.5rem;
     text-align: left;
@@ -7,18 +18,47 @@
     width: 200px;
 }
 
-.inputCol {
-    display: flex;
-    flex-direction: column;
+.work-label {
+    grid-row: 1;
+    grid-column: 1;
+    font-size: 2rem;
 }
 
-.inputCol p {
+.word-time-input {
+    grid-row: 2;
+    grid-column: 1;
+}
+
+.rest-label {
+    grid-row: 1;
+    grid-column: 2;
     font-size: 2rem;
-    padding: 5px;
-    margin: 5px;
+}
+
+.rest-time-input {
+    grid-row: 2;
+    grid-column: 2;
+}
+
+.add-interval {
+    grid-row: 2;
+    grid-column: 3;
+}
+
+.clear-interval {
+    grid-row: 1;
+    grid-column: 3;
+}
+
+.clear-interval:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .buttons {
+    grid-column: 3;
+    grid-row-start: 1;
+    grid-row-end: 2;
     display: flex;
     gap: 10px;
     justify-content: center;
@@ -27,6 +67,46 @@
     background-color: gray;
     border: solid var(--border-medium) var(--accent);
     margin-top: 10px;
+}
+
+@Media (max-width: 600px) {
+
+    .timer-form {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto;
+        padding: .5rem;
+    }
+
+    .work-label, .word-time-input {
+        grid-column: 1;
+
+    }
+
+    .work-label, .rest-label {
+        margin-bottom: 0px;
+    }
+
+    .rest-label, .rest-time-input {
+        grid-column: 2;
+    }
+
+    .add-interval {
+        grid-row: 3;
+        grid-column: 2;
+        justify-self: center;
+    }
+
+    .clear-interval {
+        grid-row: 3;
+        grid-column: 1;
+        justify-self: center;
+    }
+
+    .input {
+        font-size: 1rem !important;
+        width: 100%;
+        box-sizing: border-box;
+    }
 }
 
 .interval-list {
