@@ -6,22 +6,14 @@ function CardList({ cards, onDelete=null, onEdit=null }) {
         <ol className='card-list'>
             {cards.map((card, index) => (
             <li key={card.card_id} className="listed-card">
-                <div className='card-wrapper'>
-                    <p className='card-text'>Card {index+1}: </p>
-                    <div>
-                        <div className='card-text'>
-                            <p>Front:</p> 
-                            <div className='text-scroll'>{card.front}</div>
-                        </div>
-                    </div>
-                    <div>
-                        <div className='card-text'>
-                            <p>Back:</p> 
-                            <div className='text-scroll'>{card.back}</div>
-                        </div>
-                    </div>
+                <p className='card-header'>Card {index+1}: </p>
+                <div className='card-info-wrapper'>
+                    <p className='front-label'>Front:</p> 
+                    <div className='text-scroll front-text'>{card.front}</div>
+                    <p className='back-label'>Back:</p> 
+                    <div className='text-scroll back-text'>{card.back}</div>
                 </div>
-                <div className='button-area'>
+                <div className='button-wrapper'>
                     {onDelete && 
                         <button
                             onClick={() => onDelete(card.card_id)}

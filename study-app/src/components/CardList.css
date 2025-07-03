@@ -1,53 +1,73 @@
-.listed-card {
-    display: flex;
-    gap: 30px;
-    justify-content: flex-start;
-    width: 100%;
-    max-height: none;
-    overflow: visible;
-}
-
-.listed-card p {
-    font-size: 1.5rem;
-    padding: 0px;
-    margin: 0px;
-}
-
-.card-text {
-    font-size: 1rem;
-    margin: 0px;
-    white-space: pre-wrap;
-    text-align: left;
-    overflow-wrap: break-word;
-    word-break: break-word;
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-}
-
-.card-text p {
-    font-size: 1rem;
-}
-
-.text-scroll {
-    max-height: 300px;
-    overflow-y: auto;
-    padding: 5px;
-    padding-right: 10px;
-    white-space: pre-wrap;
-    word-break: break-word;
-    border: solid var(--border-thin) var(--accent);
-}
-
 .card-list {
   list-style: none;
   padding: 50px;
   padding-top: 0px;
   border-radius: 15px;
-  margin: 0 auto;
   text-align: center;
   width: 100%;
   max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.listed-card {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    background-color: gray;
+    padding-bottom: 25px;
+    border: solid var(--border-thin) var(--accent);
+    border-radius: 15px;
+}
+
+.card-info-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+}
+
+.card-header {
+    padding: 0px;
+    margin: 0px;
+    border-radius: 15px 15px 0 0;
+}
+
+.front-label {
+    padding: 0px;
+    margin: 0px;
+
+}
+
+.back-label {
+    padding: 0px;
+    margin: 0px;
+}
+
+.text-scroll {
+    max-height: 300px;
+    width: fit-content;
+    padding: 10px;
+    padding-right: 20px;
+    border-radius: 10px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    border: solid var(--border-thin) var(--accent);
+    background-color: lightgray;
+    margin: 0px 25px;
+}
+
+.button-wrapper {
+    display: flex;
+    grid-column: 1;
+    grid-row: 3;
+    gap: 25px;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
 }
 
 .delete-button {
@@ -76,48 +96,4 @@
 
 .edit-button:hover {
     background-color: var(--primary-button-hover-color);
-}
-
-.card-wrapper {
-    display: flex;
-    flex-direction: column; 
-    align-items: left;
-    gap: 30px;
-    padding: 3rem; 
-    margin-bottom: 1rem;
-    margin-top: 1rem;
-    background-color: var(--primary-button-background-color);
-    border-radius: 2rem;
-    width: 100%;
-    border: solid var(--border-thin) var(--accent);
-}
-
-.button-area {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-@Media (max-width: 600px) {
-    .listed-card {
-        flex-direction: column;
-        margin: 5px;
-        gap: 0px;
-    }
-    .card-wrapper {
-        padding: 1rem;
-        border-radius: 0px;
-    }
-    .button-area {
-        flex-direction: row;
-    }
-    .card-text {
-        font-size: 1rem;
-    }
-    .card-list {
-        margin: 0px;
-        padding: 0px;
-    }
 }
