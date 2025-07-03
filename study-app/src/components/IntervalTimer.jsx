@@ -317,9 +317,19 @@ function IntervalTimer() {
 
     const jsxIntervals = intervals.map((intervalPair, index) => {
         return (
-            <li key={index}>
-                <p>{secondsToMinuteSecondsString(intervalPair[0])} work, {secondsToMinuteSecondsString(intervalPair[1])} rest.</p>
-                <button type="button" onClick={() => deleteIthInterval(index)}>Delete</button>
+            <li key={index} id={index.toString()}>
+                <div className="listed-interval-text" id={"Divider for interval" + (index + 1).toString()}>
+                    <p>Work: {secondsToMinuteSecondsString(intervalPair[0])}</p>
+                    <p>Rest: {secondsToMinuteSecondsString(intervalPair[1])}</p>
+                </div>
+                <button 
+                    type="button" 
+                    onClick={() => deleteIthInterval(index)} 
+                    id={"Delete button" + (index + 1).toString()}
+                    className={`delete-button ${phase ? 'hidden' : ''}`}
+                >
+                    Delete
+                </button>
             </li>
         )
     });
@@ -335,66 +345,81 @@ function IntervalTimer() {
                 <input 
                     type='checkbox' 
                     checked={playSound}
+                    id="Use sound checkbox"
                     onChange={() => setPlaySound(prev => !prev)}
                 />
                 Play Timer Sound
             </label>
-            <form onSubmit={addInterval} className='timer-form' id="interval-specification-form">
 
-                <p className="work-label" id="work-time-label">Work Time</p>
-                <input 
-                    placeholder="ss or mm:ss"
-                    className='input work-time-input'
-                    value={currentWorkTime}
-                    ref={workInputRef}
-                    id="work-time-input-box"
-                    onChange= {(e) => setCurrentWorkTime(e.target.value)}
-                />
-                <p className="rest-label" id="rest-time-label">Rest Time</p>
-                <input 
-                    placeholder="ss or mm:ss"
-                    className="input rest-time-input"
-                    value={currentRestTime}
-                    id="rest-time-input-box"
-                    onChange={(e) => setCurrentRestTime(e.target.value)}
-                />
+            {!phase &&
+                <form onSubmit={addInterval} className='timer-form' id="interval-specification-form">
+                    <p className="work-label" id="work-time-label">Work Time</p>
+                    <input 
+                        placeholder="ss or mm:ss"
+                        className='input work-time-input'
+                        value={currentWorkTime}
+                        ref={workInputRef}
+                        id="work-time-input-box"
+                        onChange= {(e) => setCurrentWorkTime(e.target.value)}
+                    />
+                    <p className="rest-label" id="rest-time-label">Rest Time</p>
+                    <input 
+                        placeholder="ss or mm:ss"
+                        className="input rest-time-input"
+                        value={currentRestTime}
+                        id="rest-time-input-box"
+                        onChange={(e) => setCurrentRestTime(e.target.value)}
+                    />
 
-                <button type="button" id="clear-intervals-button" onClick={handleClearIntervals} disabled={intervals.length === 0} className="small-button clear-interval">Clear Intervals</button>
-                <button type="submit" id="add-interval-button" className="small-button add-interval">Add Interval</button>
-            </form>
+                    <button type="button" id="clear-intervals-button" onClick={handleClearIntervals} disabled={intervals.length === 0} className="timer-button clear-interval">Clear Intervals</button>
+                    <button type="submit" id="add-interval-button" className="timer-button add-interval">Add Interval</button>
 
-            {phase && (
-                <div className="timer-display">
-                    <h3>{phase.toUpperCase()} phase {currentIndex+1}</h3>
-                    <h1>{timeRemaining === null ? 'Starting...' : `${secondsToMinuteSecondsString(Math.ceil(timeRemaining / 1000))}s remaining`}</h1>
+                    {intervals.length > 0 && 
+                    <div className="interval-list timer-interval-list" id="List of inputted intervals">
+                        <ol>
+                            {jsxIntervals}
+                        </ol>
+                    </div>            
+                    }
+                </form>
+            }
+
+            <div className="timer-area">
+                {phase && (
+                    <div className="timer-display">
+                        <h3>{phase.toUpperCase()} phase {currentIndex+1}</h3>
+                        <h1>{timeRemaining === null ? 'Starting...' : `${secondsToMinuteSecondsString(Math.ceil(timeRemaining / 1000))}s remaining`}</h1>
+                    </div>
+                )}
+
+                <div className="buttons">
+
+                    {!pauseTime && phase && 
+                        <button type="button" onClick={handlePause} className="timer-button">Pause</button>                    
+                    }
+
+                    {pauseTime && 
+                        <button type="button" onClick={handleResume} className="timer-button">Resume</button>                
+                    }
+
+                    {!phase &&                    
+                        <button type="button" onClick={handleStart} className="timer-button" disabled={intervals.length === 0 ? true : false}>Start Timer</button>
+                    }
+
+                    {phase &&
+                        <button type="button" onClick={handleReset} className="timer-button">End Timer</button>                    
+                    }
                 </div>
-            )}
 
-            <div className="buttons">
-                {!pauseTime && phase && 
-                    <button type="button" onClick={handlePause} className="small-button">Pause</button>                    
-                }
-
-                {pauseTime && 
-                    <button type="button" onClick={handleResume} className="small-button">Resume</button>                
-                }
-
-                {!phase &&                    
-                    <button type="button" onClick={handleStart} className="small-button">Start Timer</button>
-                }
-
-                {phase &&
-                    <button type="button" onClick={handleReset} className="small-button">End Timer</button>                    
+                
+                {intervals.length > 0 && phase &&
+                    <div className="interval-list timer-interval-list" id="List of inputted intervals">
+                        <ol className='numbered'>
+                            {jsxIntervals}
+                        </ol>
+                    </div>            
                 }
             </div>
-
-            {intervals.length > 0 && 
-            <div className="interval-list">
-                <ol>
-                    {jsxIntervals}
-                </ol>
-            </div>            
-            }
         </div>
         
     );

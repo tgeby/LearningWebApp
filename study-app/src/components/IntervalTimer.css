@@ -1,30 +1,43 @@
 .timer-form {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto auto;
     padding: 25px;
     background-color: gray;
     gap: 15px;
     border-radius: 15px;
     border: solid var(--border-medium) var(--accent);
+    margin: 0 auto;
+    max-width: 500px;
+    width: 100%;
+}
+
+.timer-form > * {
+  justify-self: center;  
+  text-align: center;   
 }
 
 .input {
     font-size: 1.5rem;
-    text-align: left;
+    text-align: center;
     border: solid var(--border-medium) var(--accent);
     padding: 15px;
     color: var(--accent);
-    width: 200px;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .work-label {
     grid-row: 1;
     grid-column: 1;
     font-size: 2rem;
+    justify-self: right;
+    padding-right: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
-.word-time-input {
+.work-time-input {
     grid-row: 2;
     grid-column: 1;
 }
@@ -33,6 +46,10 @@
     grid-row: 1;
     grid-column: 2;
     font-size: 2rem;
+    justify-self: left;
+    padding-left: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .rest-time-input {
@@ -41,13 +58,13 @@
 }
 
 .add-interval {
-    grid-row: 2;
-    grid-column: 3;
+    grid-row: 3;
+    grid-column: 2;
 }
 
 .clear-interval {
-    grid-row: 1;
-    grid-column: 3;
+    grid-row: 3;
+    grid-column: 1;
 }
 
 .clear-interval:disabled {
@@ -55,31 +72,46 @@
     cursor: not-allowed;
 }
 
-.buttons {
-    grid-column: 3;
-    grid-row-start: 1;
-    grid-row-end: 2;
-    display: flex;
-    gap: 10px;
-    justify-content: center;
-    padding: 25px;
-    border-radius: 15px;
-    background-color: gray;
-    border: solid var(--border-medium) var(--accent);
-    margin-top: 10px;
+.timer-interval-list {
+    border: none !important;
+    grid-column: 1 /span 2;
+    grid-row: 4;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
 }
 
-@Media (max-width: 600px) {
+.timer-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-width: 80px;
+    min-height: 80px;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    color: var(--primary-text-color);
+    border: var(--border-medium) solid var(--accent);
+    background-color: var(--primary-button-background-color);
+    white-space: normal;
+    cursor: pointer;
+    padding: 15px;
+}
+
+.timer-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
 
     .timer-form {
         grid-template-columns: 1fr 1fr;
-        grid-template-rows: auto auto auto;
-        padding: .5rem;
+        grid-template-rows: auto auto auto auto;
+        padding: 0.5rem;
     }
 
-    .work-label, .word-time-input {
+    .work-label, .work-time-input {
         grid-column: 1;
-
     }
 
     .work-label, .rest-label {
@@ -93,13 +125,11 @@
     .add-interval {
         grid-row: 3;
         grid-column: 2;
-        justify-self: center;
     }
 
     .clear-interval {
         grid-row: 3;
         grid-column: 1;
-        justify-self: center;
     }
 
     .input {
@@ -131,22 +161,36 @@
     gap: 15px;
 }
 
-.form-buttons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 25px;
+.interval-list ol.numbered {
+    list-style: decimal !important;
+    list-style-type: decimal !important; 
+    padding-left: 20px; 
 }
 
 .interval-list li {
     font-size: 1.5rem;
     padding: 0px;
     margin: 0px;
+    display: list-item; /* Keeps the numbers */
+}
+
+.interval-list li > div {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+
+.listed-interval-text {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    gap: 10px;
 }
 
 .interval-list p {
-    padding: 15px;
     margin: 0px;
 }
 
@@ -175,10 +219,40 @@
     color: black;
 }
 
-.timer-display {
-    margin-top: 10px;
-    padding: 25px;
+.timer-area {
+    display: flex;
+    flex-direction: column;
     background-color: gray;
     border: solid var(--border-medium) var(--accent);
+    gap: 10px;
+    justify-content: center;
     border-radius: 15px;
+    margin: 10px auto;
+    max-width: 500px;
+    width: 100%;
+}
+
+.timer-display {
+    font-size: 1rem;
+    padding: 0;
+    margin: 0;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    padding: 15px;
+    border-radius: 15px;
+}
+
+@media (max-width: 400px) {
+    .work-label, .rest-label {
+        font-size: 1.5rem;
+        padding: 0;
+    }
+}
+
+.delete-button.hidden {
+    display: none;
 }
