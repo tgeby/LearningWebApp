@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 function IntervalTimer() {
     // Timer specification
+    const [playSound, setPlaySound] = useState(true);
     const [intervals, setIntervals] = useState([]);
     const [currentRestTime, setCurrentRestTime] = useState('');
     const [currentWorkTime, setCurrentWorkTime] = useState('');
@@ -65,6 +66,12 @@ function IntervalTimer() {
     }, []);
 
     const showNotification = useCallback((title, body) => {
+        if (playSound) {
+            const sound = new Audio('/notificationSound.mp3');
+            sound.play().catch(error => {
+                console.warn('Autoplay was prevented:', error);
+            });
+        }
         if (Notification.permission !== "granted") {
             console.log("Notifications not permitted");
 
@@ -77,7 +84,7 @@ function IntervalTimer() {
             return;
         }
         createNotification(title, body);
-    }, []);
+    }, [playSound]);
 
     function createNotification(title, body) {
         try {
@@ -321,10 +328,17 @@ function IntervalTimer() {
         <div className='main'>
             <h1 className='interval-title'>
                 Interval Timer 
-                <InfoToolTip text="Short time intervals (<10s) may be inaccurate. Browser notifications may only appear if you are in another window or tab. A sound will play when an interval expires." />
+                <InfoToolTip text="Short time intervals (<10s) may be inaccurate. Browser notifications may only appear if you are in another window or tab. Your system settings may also silence the browser notifications such as having focus mode activated on your mac. A sound will play when an interval expires if the box below is checked." />
             </h1>
             
-            
+            <label>
+                <input 
+                    type='checkbox' 
+                    checked={playSound}
+                    onChange={() => setPlaySound(prev => !prev)}
+                />
+                Play Timer Sound
+            </label>
             <form onSubmit={addInterval} className='timer-form' id="interval-specification-form">
 
                 <p className="work-label" id="work-time-label">Work Time</p>
