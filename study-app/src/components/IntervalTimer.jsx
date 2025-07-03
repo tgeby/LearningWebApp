@@ -35,6 +35,7 @@ function IntervalTimer() {
     }, [notificationPermission]);
 
     useEffect(() => {
+        document.title = "Interval Timer";
         const stored = localStorage.getItem('intervals');
         if (stored) {
             try {
@@ -164,7 +165,6 @@ function IntervalTimer() {
 
     function handleResume() {
         if (!pauseTime) return;
-
         const adjustedEndTime = nextEndTime.current + (Date.now() - pauseTime.getTime());
         nextEndTime.current = adjustedEndTime;
         setPauseTime(null);
@@ -179,6 +179,7 @@ function IntervalTimer() {
     }
 
     const handleReset = useCallback(() => {
+        document.title = "Interval Timer";
         setPauseTime(null);
         setCurrentIndex(0);
         setPhase(null);
@@ -242,12 +243,13 @@ function IntervalTimer() {
                 }
             } else {
                 setTimeRemaining(remaining);
-                // writeTimerState();
+                const capitalizedPhase = phase.charAt(0).toUpperCase() + phase.slice(1);
+                document.title = `${secondsToMinuteSecondsString(Math.ceil(timeRemaining / 1000))} - ${capitalizedPhase}`;
             }
         }, 200);
 
         return () => clearInterval(intervalId);
-    }, [phase, currentIndex, pauseTime, intervals, handleReset, writeTimerState, showNotification]);
+    }, [phase, currentIndex, pauseTime, intervals, handleReset, writeTimerState, showNotification, timeRemaining]);
 
 
     function splitAndSum(intervalString) {
