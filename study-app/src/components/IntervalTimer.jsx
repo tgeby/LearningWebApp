@@ -10,6 +10,7 @@ function IntervalTimer() {
     const [currentRestTime, setCurrentRestTime] = useState('');
     const [currentWorkTime, setCurrentWorkTime] = useState('');
     const workInputRef = useRef(null);
+    const audioRef = useRef(null);
     // Timer management
     const [currentIndex, setCurrentIndex] = useState(0);
     const [phase, setPhase] = useState(null); // null or "work" or "rest"
@@ -18,10 +19,17 @@ function IntervalTimer() {
     // Timer display
     const [timeRemaining, setTimeRemaining] = useState(0); // in ms
     const [notificationPermission, setNotificationPermission] = useState('default');
+    // Mobile help
+    const [isFlashing, setIsFlashing] = useState(false);
+
+
+    useEffect(() => {
+        audioRef.current = new Audio('/notificationSound.mp3');
+        audioRef.current.preload = 'auto';
+    }, []);
 
     useEffect(() => {
         if ("Notification" in window) {
-
             setNotificationPermission(Notification.permission);
 
             if (notificationPermission === 'default') {
@@ -67,24 +75,33 @@ function IntervalTimer() {
     }, []);
 
     const showNotification = useCallback((title, body) => {
-        if (playSound) {
-            const sound = new Audio('/notificationSound.mp3');
-            sound.play().catch(error => {
-                console.warn('Autoplay was prevented:', error);
-            });
-        }
-        if (Notification.permission !== "granted") {
-            console.log("Notifications not permitted");
+        try {
+            if (playSound && audioRef.current) {
+                audioRef.current.currentTime = 0;
+                audioRef.current.play().catch(error => {
+                    console.warn('Autoplay was prevented:', error);
+                });
+            }
+            if ('vibrate' in navigator) {
+                navigator.vibrate([500, 100, 500]);
+            }
+            setIsFlashing(true);
+            setTimeout(() => setIsFlashing(false), 1000);
+            if (Notification.permission !== "granted") {
+                console.log("Notifications not permitted");
 
-            Notification.requestPermission().then (permission => {
-                setNotificationPermission(permission);
-                if (permission === 'granted') {
-                    createNotification(title, body);
-                }
-            });
-            return;
+                Notification.requestPermission().then (permission => {
+                    setNotificationPermission(permission);
+                    if (permission === 'granted') {
+                        createNotification(title, body);
+                    }
+                });
+                return;
+            }
+            createNotification(title, body);
+        } catch (error) {
+            // do nothing... hopefully this fixes the iOS glitch
         }
-        createNotification(title, body);
     }, [playSound]);
 
     function createNotification(title, body) {
@@ -132,6 +149,17 @@ function IntervalTimer() {
 
     function handleStart() {
         if (intervals.length === 0) return;
+
+        // Initialize audio on user interaction for iOS
+        if (audioRef.current) {
+            audioRef.current.play().then(() => {
+                audioRef.current.pause();
+                audioRef.current.currentTime = 0;
+            }).catch(() => {
+
+            });
+        }
+
         setCurrentIndex(0);
         setPhase('work');
         const endTime = Date.now() + intervals[0][0] * 1000;
@@ -220,36 +248,46 @@ function IntervalTimer() {
 
         const intervalId = setInterval(() => {
             if (pauseTime || !nextEndTime.current) return;
+            
+            const now = Date.now();
+            const remaining = nextEndTime.current - now;
 
-            const remaining = nextEndTime.current - Date.now();
+            setTimeRemaining(remaining);
 
             if (remaining <= 0) {
+                // An interval expired
+                
                 if (currentIndex >= intervals.length - 1 && phase === 'rest') {
-                    showNotification(`End of set: ${currentIndex + 1}, phase: ${phase}`, 'All sets complete! Great job!');
+                    // Timer finished
+                    showNotification(`Timer Complete!`, 'All intervals finished! Great job!');
                     handleReset();
-                    // writeTimerState(); 
                     return;
                 } else {
-                    showNotification(`End of set: ${currentIndex + 1}, phase: ${phase}`, 'On to the next set!');
+                    // Move to next phase
+                    showNotification(`${phase.toUpperCase()} Complete!`, `Moving to ${phase === 'work' ? 'rest' : 'work'} phase`);
+                    
                     const nextPhase = phase === 'work' ? 'rest' : 'work';
+                    let nextIndex = currentIndex;
+
                     if (phase === 'rest') {
-                        setCurrentIndex(prev => prev + 1)
+                        nextIndex = currentIndex + 1;
+                        setCurrentIndex(nextIndex);
                     }
                     setPhase(nextPhase);
 
-                    const nextIntervalSeconds = intervals[currentIndex][nextPhase === 'work' ? 0 : 1];
-                    nextEndTime.current = Date.now() + nextIntervalSeconds * 1000;
+                    const nextIntervalSeconds = intervals[nextIndex][nextPhase === 'work' ? 0 : 1];
+                    nextEndTime.current = now + nextIntervalSeconds * 1000;
+                    
                     writeTimerState();
                 }
             } else {
-                setTimeRemaining(remaining);
                 const capitalizedPhase = phase.charAt(0).toUpperCase() + phase.slice(1);
-                document.title = `${secondsToMinuteSecondsString(Math.ceil(timeRemaining / 1000))} - ${capitalizedPhase}`;
+                document.title = `${secondsToMinuteSecondsString(Math.ceil(remaining / 1000))} - ${capitalizedPhase}`;
             }
-        }, 200);
+        }, 100);
 
         return () => clearInterval(intervalId);
-    }, [phase, currentIndex, pauseTime, intervals, handleReset, writeTimerState, showNotification, timeRemaining]);
+    }, [phase, currentIndex, pauseTime, intervals, handleReset, writeTimerState, showNotification]);
 
 
     function splitAndSum(intervalString) {
@@ -318,8 +356,9 @@ function IntervalTimer() {
     }
 
     const jsxIntervals = intervals.map((intervalPair, index) => {
+        const isCurrentInterval = phase && index === currentIndex;
         return (
-            <li key={index} id={index.toString()}>
+            <li key={index} id={index.toString()} className={isCurrentInterval ? 'current-interval' : ''}>
                 <div className="listed-interval-text" id={"Divider for interval" + (index + 1).toString()}>
                     <p>Work: {secondsToMinuteSecondsString(intervalPair[0])}</p>
                     <p>Rest: {secondsToMinuteSecondsString(intervalPair[1])}</p>
@@ -337,7 +376,7 @@ function IntervalTimer() {
     });
 
     return (
-        <div className='main'>
+        <div className="main">
             <h1 className='interval-title'>
                 Interval Timer 
                 <InfoToolTip text="Short time intervals (<10s) may be inaccurate. Browser notifications may only appear if you are in another window or tab. Your system settings may also silence the browser notifications such as having focus mode activated on your mac. A sound will play when an interval expires if the box below is checked." />
@@ -388,9 +427,9 @@ function IntervalTimer() {
 
             <div className="timer-area">
                 {phase && (
-                    <div className="timer-display">
+                    <div className={`timer-display ${isFlashing ? 'flash-alert' : ''}`}>
                         <h3>{phase.toUpperCase()} phase {currentIndex+1}</h3>
-                        <h1>{timeRemaining === null ? 'Starting...' : `${secondsToMinuteSecondsString(Math.ceil(timeRemaining / 1000))}s remaining`}</h1>
+                        <h1>{timeRemaining < 0 ? '00:00' : `${secondsToMinuteSecondsString(Math.ceil(timeRemaining / 1000))}s remaining`}</h1>
                     </div>
                 )}
 

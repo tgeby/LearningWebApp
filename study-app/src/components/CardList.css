@@ -18,7 +18,7 @@
     width: 100%;
     background-color: gray;
     padding-bottom: 25px;
-    border: solid var(--border-thin) var(--accent);
+    border: solid var(--border-medium) var(--accent);
     border-radius: 15px;
 }
 
@@ -56,7 +56,7 @@
     white-space: pre-wrap;
     word-break: break-word;
     border: solid var(--border-thin) var(--accent);
-    background-color: lightgray;
+    background-color: white;
     margin: 0px 25px;
 }
 
@@ -72,7 +72,7 @@
 
 .delete-button {
     height: 80px;
-    width: 80px;
+    width: 120px;
     border-radius: 10px;
     background-color: darkred;
     font-size: 2rem;
@@ -86,7 +86,7 @@
 
 .edit-button {
     height: 80px;
-    width: 80px;
+    width: 120px;
     border-radius: 10px;
     font-size: 2rem;
     color: var(--primary-text-color);
@@ -94,6 +94,32 @@
     border: solid var(--border-thin) var(--accent);
 }
 
+.listed-card:has(.edit-textarea) {
+    /*background-color: lightgray;*/
+}
+
+.edit-textarea {
+    width: 90%;
+    max-width: 100%;
+    resize: vertical;
+    height: 100px;
+}
+
 .edit-button:hover {
     background-color: var(--primary-button-hover-color);
+}
+
+.accept:hover {
+    background-color: lightgreen;
+}
+
+.cancel:hover {
+    background-color: #B22222;
+}
+
+@media (max-width: 400px) {
+    .card-list {
+        margin: 0px;
+        padding: 0px;
+    }
 }

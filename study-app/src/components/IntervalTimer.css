@@ -256,3 +256,74 @@
 .delete-button.hidden {
     display: none;
 }
+
+/* Flash animation for timer expiration */
+.flash-alert {
+    animation: flashBackground 2s ease-in-out;
+}
+
+.timer-flash {
+    animation: flashTimer 2s ease-in-out;
+}
+
+@keyframes flashBackground {
+    0%, 100% { background-color: transparent; }
+    25% { background-color: rgba(255, 0, 0, 0.1); }
+    50% { background-color: rgba(255, 0, 0, 0.2); }
+    75% { background-color: rgba(255, 0, 0, 0.1); }
+}
+
+@keyframes flashTimer {
+    0%, 100% { 
+        background-color: transparent; 
+        transform: scale(1);
+        box-shadow: none;
+    }
+    25% { 
+        background-color: rgba(255, 0, 0, 0.2); 
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+    }
+    50% { 
+        background-color: rgba(255, 0, 0, 0.3); 
+        transform: scale(1.1);
+        box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
+    }
+    75% { 
+        background-color: rgba(255, 0, 0, 0.2); 
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+    }
+}
+
+.current-interval {
+    background-color: var(--primary-button-background-color);
+    padding: 25px !important;
+    border-radius: 5px;
+}
+
+/* Make timer display more prominent during flash */
+.timer-display {
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+/* Ensure good contrast for mobile */
+@media (max-width: 768px) {
+    .timer-display {
+        padding: 15px;
+        margin: 10px 0;
+    }
+    
+    .flash-alert {
+        animation: flashBackgroundMobile 2s ease-in-out;
+    }
+    
+    @keyframes flashBackgroundMobile {
+        0%, 100% { background-color: transparent; }
+        25% { background-color: rgba(255, 0, 0, 0.15); }
+        50% { background-color: rgba(255, 0, 0, 0.25); }
+        75% { background-color: rgba(255, 0, 0, 0.15); }
+    }
+}

@@ -51,7 +51,7 @@
     overflow: hidden;
 }
 
-.card-header {
+.flashcard-header {
     background-color: rgba(0,0,0,0.1);
     padding: 0.5rem 1rem;
     font-weight: bold;

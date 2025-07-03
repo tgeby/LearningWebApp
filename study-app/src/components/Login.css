@@ -26,6 +26,22 @@
 }
 
 .login-button {
-    width: 150px;
-    height: 60px;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    border-radius: 10px;
+    font-size: 2rem;
+    color: var(--primary-text-color);
+    border: var(--border-medium) solid var(--accent);
+    background-color: var(--primary-button-background-color);
+    cursor: pointer
+}
+
+.login-button:hover {
+    background-color: var(--primary-button-hover-color);
+}
+
+.login-title {
+    margin-top: 25px;
 }

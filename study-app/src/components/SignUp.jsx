@@ -29,7 +29,8 @@ function SignUp() {
 
     return (
         <div className="menu">
-            <h2 className='title'>Welcome</h2>
+            <button className='login-button' onClick={() => navigate("/")}>Back</button>
+            <h2 className='title login-title'>Welcome</h2>
             <form className="login-form" onSubmit={HandleSignUp}>
                 <input
                 type="text"

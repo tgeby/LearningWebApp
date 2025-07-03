@@ -29,27 +29,30 @@ function LogIn() {
     }
 
     return (
-        <div className="menu">
-            <h2 className='title'>Welcome</h2>
-            <form className="login-form" onSubmit={HandleLogin}>
-                <input
-                type="text"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
-                className="textField"
-                />
-                <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Enter your password"
-                className="textField"
-                />
-                <button type="submit" className="menu-button">Log In</button>
-                {loginError && <p>{loginError}</p>}
-            </form>
-        </div>
+        <>
+            <div className="menu">
+                <button className='login-button' onClick={() => navigate("/")}>Back</button>
+                <h2 className='title login-title'>Welcome</h2>
+                <form className="login-form" onSubmit={HandleLogin}>
+                    <input
+                    type="text"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="textField"
+                    />
+                    <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    className="textField"
+                    />
+                    <button type="submit" className="menu-button">Log In</button>
+                    {loginError && <p>{loginError}</p>}
+                </form>
+            </div>
+        </>
     );
 }
 

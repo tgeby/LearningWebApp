@@ -19,7 +19,7 @@ function EditDeck() {
     const [currentName, setCurrentName] = useState('');
     const [currentDeck, setCurrentDeck] = useState([]);
     const [statusMessage, setStatusMessage] = useState('');
-
+    
     async function handlePublishDeck() {
         if (!user || !deckId) return;
         console.log('update deck');
@@ -34,7 +34,6 @@ function EditDeck() {
             }, {merge: true});
 
             setStatusMessage('Successfully updated deck');
-
             setTimeout(() => {
                 navigate('/menu');
             }, 1500);
@@ -82,8 +81,26 @@ function EditDeck() {
     }
     if (error) return <p>{error}</p>;
 
+    const toastStyle = {
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        padding: '12px 24px',
+        backgroundColor: statusMessage.includes('Successfully') ? '#28a745' : '#dc3545',
+        color: 'white',
+        borderRadius: '4px',
+        zIndex: 1000,
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+    };
+
     return (
         <div className='main'>
+            {statusMessage && (
+                <div style={toastStyle}>
+                    {statusMessage}
+                </div>
+            )}
+
             <div className='top-row'>
                 <button
                     className='small-button' 
@@ -99,7 +116,6 @@ function EditDeck() {
                 </button>
                 <div className='title-edit-deck'>Edit Deck ({currentDeck.length} cards)</div>
             </div>
-            {statusMessage && <p className="status-message">{statusMessage}</p>}
 
             {currentDeck.length > 0 && 
                 <DeckEditor

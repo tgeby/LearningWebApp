@@ -1,4 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from 'react-router-dom';
+
 import CardList from './CardList';
 import './CreateDeck.css';
 import './DeckEditor.css';
@@ -9,9 +11,9 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
     const [back, setBack] = useState('');
     const [deck, setDeck] = useState(initialDeck);
     const [modifyID, setModifyID] = useState(null);
-    const editorRef = useRef(null);
     const [useMassUpload, setUseMassUpload] = useState(false);
     const [massUploadText, setMassUploadText] = useState('');
+    const navigate = useNavigate();
 
     useEffect(() => {
         onDeckChange(deck);
@@ -25,14 +27,13 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
         setDeck(prev => prev.filter((card, index) => card.card_id !== deleteID));
     }, []);
 
-    const onEdit = useCallback((editID) => {
-        setModifyID(editID);
-        const cardToEdit = deck.find(card => card.card_id === editID);
-        if (cardToEdit) {
-            setFront(cardToEdit.front);
-            setBack(cardToEdit.back);
-            editorRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }
+    const onEdit = useCallback((editID, newFront, newBack) => {
+        const updatedDeck = deck.map(card =>
+            card.card_id === editID
+                ? { ...card, front: newFront, back: newBack }
+                : card
+        );
+        setDeck(updatedDeck);
     }, [deck]);
 
     function handleAddCard() {
@@ -83,7 +84,7 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
 
     return (
         <>
-            <div className="deck-name-field" ref={editorRef}>
+            <div className="deck-name-field">
                 <span>Name: </span>
                 <input
                     className="input"
@@ -128,6 +129,7 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
                 }
                 <button className="small-button" type="button" onClick={handleAddCard}>{modifyID === null ? 'Add Card' : 'Update Card'}</button>
             </div>
+            
             <button 
                 className='menu-button' 
                 onClick={() => {
@@ -135,6 +137,15 @@ function DeckEditor({ initialDeck = [], initialName = '', onDeckChange, onNameCh
                 }}
             >
                 Submit Deck
+            </button>
+
+            <button 
+                className='menu-button' 
+                onClick={() => {
+                    navigate("/menu");
+                }}
+            >
+                Cancel
             </button>
 
             {!useMassUpload && 

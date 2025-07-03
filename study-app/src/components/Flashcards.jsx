@@ -102,7 +102,7 @@ function Flashcards() {
                             <div className='flip-card'>
                                 <div className={`flip-card-inner ${isFront ? '' : 'flipped'}`}>
                                     <div className='flip-card-front'>
-                                        <div className='card-header'>
+                                        <div className='flashcard-header'>
                                             Card: {currentIndex + 1} of {deck.cards.length}
                                         </div>
                                         <div className='card-front' ref={frontRef}>
