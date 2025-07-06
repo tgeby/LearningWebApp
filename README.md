@@ -28,7 +28,7 @@ When a timer expires, a browser notification will show in addition to the timer 
 ### View the countdown in the browser tab
 ![Interval timer browser tab](countdown.png)
 
-### The timer allows you to accidentally refresh or close the tab
+### The timer will keep working if you accidentally refresh or close the tab
 ![Interval timer example gif](timerExample.gif)
 
 ## Planned Features
