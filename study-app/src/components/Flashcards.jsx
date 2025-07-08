@@ -139,8 +139,17 @@ function Flashcards() {
             <div className='controls'>
                 <button 
                     type='button' 
+                    onClick={handleReset}
+                    disabled={!deck?.cards || currentIndex === 0}
+                    className='lower-reset-button'
+                >
+                    Reset
+                </button>
+                <button 
+                    type='button' 
                     disabled={currentIndex === 0}
                     onClick={handleBack}
+                    className='back-button'
                 >
                     Back
                 </button>
@@ -148,6 +157,7 @@ function Flashcards() {
                     type='button' 
                     disabled={!deck?.cards || currentIndex >= deck.cards.length}
                     onClick={handleNext}
+                    className='next-button'
                 >
                     Next
                 </button>
@@ -155,6 +165,7 @@ function Flashcards() {
                     type='button' 
                     onClick={handleFlip}
                     disabled={!deck?.cards || currentIndex >= deck.cards.length}
+                    className='flip-button'
                 >
                     Flip Card
                 </button>

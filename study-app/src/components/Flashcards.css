@@ -95,14 +95,15 @@
 }
 
 .controls {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    grid-template-rows: auto auto;
     gap: 1rem;
     /*border: dashed 2px green;*/
     max-width: 500px;
     width: 100%;
     height: 80px;
     justify-content: center;
-    flex-wrap: wrap;
     margin-top: 1rem;
 }
 
@@ -143,4 +144,24 @@
 .reset-button:hover {
     background-color: var(--primary-button-hover-color);
     cursor: pointer;
+}
+
+.lower-reset-button {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.back-button {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.next-button {
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.flip-button {
+    grid-column: 4;
+    grid-row: 1;
 }
