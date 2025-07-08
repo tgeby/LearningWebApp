@@ -22,22 +22,78 @@ function Flashcards() {
     const [isFront, setIsFront] = useState(true);
     const [isFlipping, setIsFlipping] = useState(false);
     const [isChanging, setIsChanging] = useState(false);
+    const [ready, setReady] = useState(false);
+    const [showToast, setShowToast] = useState(false);
     const frontRef = useRef(null);
     const backRef = useRef(null);
+    const currentIndexRef = useRef(currentIndex);
+    const isFrontRef = useRef(isFront);
+    
+    useEffect(() => {
+        currentIndexRef.current = currentIndex;
+        isFrontRef.current = isFront;
+    }, [currentIndex, isFront]);
 
     useEffect(() => {
-        if (deckData) {
-            setDeck(deckData);
+        if (!deckData) {
+            return;
         }
-    }, [deckData]);
+        setDeck(deckData);
+
+        const stored = localStorage.getItem('flashcard-state');
+        const tryRestoreState = () => {
+            if (!stored) return;
+            try {
+                const parsed = JSON.parse(stored);
+                if (!parsed) return;
+
+                const storedTime = parsed['timestamp'] ? new Date(parsed['timestamp']) : null;
+                if ((storedTime && ((Date.now() - storedTime.getTime()) > 30000)) || (deckId !== parsed['deckId'])) {
+                    localStorage.removeItem('flashcard-state');
+                    return;
+                }
+
+                setCurrentIndex(parsed['index']);
+                setIsFront(parsed['isFront']);
+                if (parsed['index'] === 0 && parsed['isFront'])
+                    return;
+                setShowToast(true);
+                setTimeout(() => {
+                    setShowToast(false);
+                }, 1000);
+            } catch (error) {
+                console.log("Failed to parse stored flashcard usage state: ", error);
+            }
+        };
+
+        tryRestoreState();
+
+        // Ready to render
+        setReady(true);
+    }, [deckData, deckId]);
+
+    useEffect(() => {
+        const handleBeforeUnload = (() => {
+            const flashcardState = {
+                timestamp: new Date().toISOString(),
+                'index': currentIndexRef.current,
+                'isFront': isFrontRef.current,
+                'deckId': deckId
+            };
+            localStorage.setItem('flashcard-state', JSON.stringify(flashcardState));
+        });
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [deckId]);
 
     function handleReset() {
         setCurrentIndex(0);
-        setIsFront(0);
+        setIsFront(true);
+        localStorage.removeItem('flashcard-state');
     }
 
     if (!deckId) return <Navigate to="/menu" />;
-    if (loading) return <p className='loading'>Loading deck...</p>;
+    if (loading || !ready) return <p className='loading'>Loading deck...</p>;
     if (error) return <p>{error}</p>;
     if (!deck || !deck.cards) return <p>Deck data is invalid.</p>;
 
@@ -92,8 +148,36 @@ function Flashcards() {
         }, delay);  
     };
 
+    const toastStyle = {
+        position: 'fixed',
+        top: '20px',
+        right: '20px',
+        padding: '12px 24px',
+        backgroundColor: '#28a745',
+        color: 'white',
+        borderRadius: '4px',
+        zIndex: 1000,
+        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+
+        // ease in and out
+        opacity: 0,
+        transform: 'translateY(-10px)',
+        transition: 'opacity 0.3s ease, transform 0.3s ease',
+    };
+
+    const toastVisibleStyle = {
+        opacity: 1,
+        transform: 'translateY(0)',
+    };
+
     return (
         <div className="main">
+            <div style={{ 
+                ...toastStyle, 
+                ...(showToast ? toastVisibleStyle : {}) 
+                }}>
+                Session restored
+            </div>
             <div className='flashcard-area'>
                 {deck !== null && (
                     <div>
@@ -103,7 +187,7 @@ function Flashcards() {
                                 <div className={`flip-card-inner ${isFront ? '' : 'flipped'}`}>
                                     <div className='flip-card-front'>
                                         <div className='flashcard-header'>
-                                            Card: {currentIndex + 1} of {deck.cards.length}
+                                            Card Front: {currentIndex + 1} of {deck.cards.length}
                                         </div>
                                         <div className='card-front' ref={frontRef}>
                                             <div className='card-body'>
@@ -114,8 +198,8 @@ function Flashcards() {
                                         </div>
                                     </div>
                                     <div className='flip-card-back'>
-                                        <div className='card-header'>
-                                            Card: {currentIndex + 1} of {deck.cards.length}
+                                        <div className='flashcard-header'>
+                                            Card Back: {currentIndex + 1} of {deck.cards.length}
                                         </div>
                                         <div className='card-back' ref={backRef}>
                                             <div className='card-body'>
