@@ -12,7 +12,7 @@
 .flashcard-area h1 {
     padding: 0;
     margin: 0;
-    margin-bottom: 1rem;
+    margin-bottom: .5rem;
 }
 
 .flip-card {
@@ -97,7 +97,7 @@
 .controls {
     display: grid;
     grid-template-columns: auto auto auto auto;
-    grid-template-rows: auto auto;
+    grid-template-rows: auto auto auto auto;
     gap: 1rem;
     /*border: dashed 2px green;*/
     max-width: 500px;
@@ -164,4 +164,28 @@
 .flip-button {
     grid-column: 4;
     grid-row: 1;
+}
+
+.input-div {
+    grid-column: 1 /span 4;
+    grid-row: 4;
+    padding-left: 2rem;
+}
+
+.controls label {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.controls input {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+@media (max-width: 400) {
+    .controls {
+        grid-template-columns: auto auto;
+        grid-template-rows: auto auto auto auto;
+    }
+
 }

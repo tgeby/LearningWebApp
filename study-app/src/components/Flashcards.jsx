@@ -1,20 +1,24 @@
 import '../styles/global-styles.css';
 import './Flashcards.css';
+import InfoToolTip from './InfoToolTip';
 
 import { Navigate, useLocation } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
-import { useState, useEffect, useRef } from 'react';
-import {useDeck} from '../hooks/useDeck';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import { useDeck } from '../hooks/useDeck';
 
 function Flashcards() {
 
     const { user } = useAuth();
 
+    // Used to get the deckId from the deck selection page
     const location = useLocation();
     const deckId = location.state?.deckId;
 
-    // Deck
+    // Card deck
     const [deck, setDeck] = useState(null);
+
+    // Gets the deck object from the database
     const {deckData, loading, error} = useDeck(deckId, user);
 
     // Flashcard state
@@ -23,16 +27,44 @@ function Flashcards() {
     const [isFlipping, setIsFlipping] = useState(false);
     const [isChanging, setIsChanging] = useState(false);
     const [ready, setReady] = useState(false);
+    const [shuffle, setShuffle] = useState(false); // new
+    const [shuffledCards, setShuffledCards] = useState([]); // new
+ 
+    // Prevents annoying accidental double clicks on the shuffle toggle
+    const [shuffleInputDisabled, setShuffleInputDisabled] = useState(false);
+
+    // Used to indicate that a previous session was restored
     const [showToast, setShowToast] = useState(false);
-    const frontRef = useRef(null);
-    const backRef = useRef(null);
+
+    // Used to store the flashcard state in localStorage
     const currentIndexRef = useRef(currentIndex);
     const isFrontRef = useRef(isFront);
+    const shuffledCardsRef = useRef(shuffledCards);
+    const isShuffleRef = useRef(shuffle);
+
+    // Used to reset the scroll each time the card changes
+    const frontRef = useRef(null);
+    const backRef = useRef(null);
     
+    // Update the flashcard state in a ref whenever it changes so that the state can be stored in localStorage if the user accidentally refreshes
+    // or closes the page.
     useEffect(() => {
         currentIndexRef.current = currentIndex;
         isFrontRef.current = isFront;
-    }, [currentIndex, isFront]);
+        shuffledCardsRef.current = shuffledCards;
+        isShuffleRef.current = shuffle;
+    }, [currentIndex, isFront, shuffle, shuffledCards]);
+
+    const getShuffledDeck = useCallback(() => {
+        if (!deck?.cards) return [];
+        let newShuffledCards = [...deck.cards];
+        // Fisher-Yates Shuffle
+        for (let i = newShuffledCards.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1)); // Random index from 0 to i
+            [newShuffledCards[i], newShuffledCards[j]] = [newShuffledCards[j], newShuffledCards[i]]; // Swap
+        }
+        return newShuffledCards;
+    }, [deck?.cards]);
 
     useEffect(() => {
         if (!deckData) {
@@ -45,12 +77,21 @@ function Flashcards() {
             if (!stored) return;
             try {
                 const parsed = JSON.parse(stored);
+
                 if (!parsed) return;
 
                 const storedTime = parsed['timestamp'] ? new Date(parsed['timestamp']) : null;
                 if ((storedTime && ((Date.now() - storedTime.getTime()) > 30000)) || (deckId !== parsed['deckId'])) {
                     localStorage.removeItem('flashcard-state');
                     return;
+                }
+                setShuffle(parsed['isShuffle']);
+                if (parsed['isShuffle']) {
+                    if (Array.isArray(parsed['shuffledCards'])) {
+                        setShuffledCards(parsed['shuffledCards']);
+                    } else {
+                        setShuffledCards(getShuffledDeck());
+                    }
                 }
 
                 setCurrentIndex(parsed['index']);
@@ -67,37 +108,67 @@ function Flashcards() {
         };
 
         tryRestoreState();
-
         // Ready to render
         setReady(true);
-    }, [deckData, deckId]);
+    }, [deckData, deckId, getShuffledDeck]);
 
+    // This useEffect allows the app to store the flashcard study session state when the page is closed or refreshed.
     useEffect(() => {
         const handleBeforeUnload = (() => {
             const flashcardState = {
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toISOString(), // Used to prevent restoring the state if enough time has passed since the previous session.
                 'index': currentIndexRef.current,
                 'isFront': isFrontRef.current,
-                'deckId': deckId
-            };
+                'isShuffle': isShuffleRef.current,
+                'shuffledCards': shuffledCardsRef.current,
+                'deckId': deckId // Used to prevent restoring the state erroneously if the user switches to another deck quickly.
+            };                   // Otherwise, closing deck A on index 4 and switching to deck B will result in loading deck B showing the card at index 4.
             localStorage.setItem('flashcard-state', JSON.stringify(flashcardState));
         });
         window.addEventListener('beforeunload', handleBeforeUnload);
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, [deckId]);
 
+    // This prevents a user from manually typing in the url to the flashcard study page without going through the menu and selecting a deck.
+    if (!deckId) return <Navigate to="/menu" />;
+
+    // This shows a loading screen while waiting for the database query to complete.
+    if (loading || !ready) return <p className='loading'>Loading deck...</p>;
+    
+    // Show an error message if fetching the deck failed.
+    if (error) return <p>{error}</p>;
+    if (!deck || !deck.cards) return <p>Deck data is invalid.</p>;
+    
     function handleReset() {
         setCurrentIndex(0);
         setIsFront(true);
+        if (shuffle) {
+            setShuffledCards(getShuffledDeck());
+        }
         localStorage.removeItem('flashcard-state');
     }
 
-    if (!deckId) return <Navigate to="/menu" />;
-    if (loading || !ready) return <p className='loading'>Loading deck...</p>;
-    if (error) return <p>{error}</p>;
-    if (!deck || !deck.cards) return <p>Deck data is invalid.</p>;
+    // Protect against a seemingly impossible case where the next button is clicked at the end of the deck
+    // Prevent reading beyond the end of the deck
+    if (currentIndex >= (shuffle ? shuffledCards.length : deck.cards.length)) {
+        return (
+            <div className="main">
+                <p>Complete</p>
+                <button onClick={handleReset} className='reset-button'>Reset</button>
+            </div>
+        );
+    }
 
-    const currentCard = deck?.cards?.[currentIndex];
+
+    // Each render this gets the current card. 
+    let currentCard = null;
+    if (shuffle) { // new
+        currentCard = shuffledCards[currentIndex];
+    } else {
+        currentCard = deck?.cards?.[currentIndex];
+    }
+
+    // This constant is used in the flip animation and in the nextCard and previousCard functions if they require a flip.
     const FLIP_DURATION_MS = 300;
 
     const resetScroll = () => {
@@ -114,7 +185,7 @@ function Flashcards() {
         setTimeout(() => {
             resetScroll();
             setIsFlipping(false);
-        }, FLIP_DURATION_MS); // 200ms lockout period before you can flip again
+        }, FLIP_DURATION_MS); 
     };
 
     const handleNext = () => {
@@ -141,7 +212,6 @@ function Flashcards() {
         setIsFront(true);
         resetScroll();
         
-
         setTimeout(() => {
             setCurrentIndex(prev => prev-1);
             setIsChanging(false);
@@ -253,6 +323,32 @@ function Flashcards() {
                 >
                     Flip Card
                 </button>
+                <div className='input-div'>
+                    <label>
+                        <input // new
+                            type='checkbox'
+                            checked = {shuffle}
+                            onChange={() => {
+                                if (shuffleInputDisabled) {
+                                    return;
+                                }
+                                setShuffleInputDisabled(true);
+                                setTimeout(() => setShuffleInputDisabled(false), 1000);
+                                const newShuffle = !shuffle;
+                                if (newShuffle) {
+                                    setShuffledCards(getShuffledDeck());
+                                } else {
+                                    setShuffledCards([]);
+                                }
+                                setShuffle(newShuffle);
+                                setCurrentIndex(0);
+                                setIsFront(true);
+                            }}
+                        />
+                        Shuffle
+                    </label>
+                    <InfoToolTip className="tooltip" text="This will scrap your current study session's progress." />
+                </div>
             </div>
         </div>
     )
