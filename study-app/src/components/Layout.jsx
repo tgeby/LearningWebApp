@@ -37,7 +37,7 @@ function Layout({ children }) {
                         <HomeButton />
                     </div>
                     <div className="header-right">
-                        <span className="user-info">Logged in as <br/> {user.email}</span>
+                        <span className="user-info">{user.email}</span>
                         <button onClick={handleLogout} className="header-button">
                             Logout
                         </button>

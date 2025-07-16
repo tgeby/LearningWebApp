@@ -188,7 +188,7 @@
     height: 1.5rem;
 }
 
-@media (max-width: 400px) {
+@media (max-width: 500px) {
     .controls {
         grid-template-columns: 1fr 1fr;
         grid-template-rows: auto auto auto auto;
