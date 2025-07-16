@@ -33,7 +33,7 @@ function StartPage() {
     return (
         <div className="menu">
             <img src="/teabee512.png" alt="TeaBee Logo" width={128} height={128} />
-            <h2 className='title'>TeaBee Study Center</h2>
+            <h2 className='title'>Study Center</h2>
             {loginError && <p>{loginError}</p>}
             <button onClick={HandleGoogleLogin} className="menu-button">Continue with Google</button>
             <button onClick={HandleLogIn} className="menu-button">Log In</button>
