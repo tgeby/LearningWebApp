@@ -55,6 +55,10 @@ function Flashcards() {
         isShuffleRef.current = shuffle;
     }, [currentIndex, isFront, shuffle, shuffledCards]);
 
+    useEffect(() => {
+        console.log(currentIndex);
+    }, [currentIndex]);
+
     const getShuffledDeck = useCallback(() => {
         if (!deck?.cards) return [];
         let newShuffledCards = [...deck.cards];
@@ -129,46 +133,7 @@ function Flashcards() {
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, [deckId]);
 
-    // This prevents a user from manually typing in the url to the flashcard study page without going through the menu and selecting a deck.
-    if (!deckId) return <Navigate to="/menu" />;
-
-    // This shows a loading screen while waiting for the database query to complete.
-    if (loading || !ready) return <p className='loading'>Loading deck...</p>;
-    
-    // Show an error message if fetching the deck failed.
-    if (error) return <p>{error}</p>;
-    if (!deck || !deck.cards) return <p>Deck data is invalid.</p>;
-    
-    function handleReset() {
-        setCurrentIndex(0);
-        setIsFront(true);
-        if (shuffle) {
-            setShuffledCards(getShuffledDeck());
-        }
-        localStorage.removeItem('flashcard-state');
-    }
-
-    // Protect against a seemingly impossible case where the next button is clicked at the end of the deck
-    // Prevent reading beyond the end of the deck
-    if (currentIndex >= (shuffle ? shuffledCards.length : deck.cards.length)) {
-        return (
-            <div className="main">
-                <p>Complete</p>
-                <button onClick={handleReset} className='reset-button'>Reset</button>
-            </div>
-        );
-    }
-
-
-    // Each render this gets the current card. 
-    let currentCard = null;
-    if (shuffle) { // new
-        currentCard = shuffledCards[currentIndex];
-    } else {
-        currentCard = deck?.cards?.[currentIndex];
-    }
-
-    // This constant is used in the flip animation and in the nextCard and previousCard functions if they require a flip.
+       // This constant is used in the flip animation and in the nextCard and previousCard functions if they require a flip.
     const FLIP_DURATION_MS = 300;
 
     const resetScroll = () => {
@@ -176,7 +141,7 @@ function Flashcards() {
         if (backRef.current) backRef.current.scrollTop = 0;
     }
 
-    const handleFlip = () => {
+    const handleFlip = useCallback(() => {
         if (isFlipping) return;
 
         setIsFlipping(true);
@@ -186,11 +151,11 @@ function Flashcards() {
             resetScroll();
             setIsFlipping(false);
         }, FLIP_DURATION_MS); 
-    };
+    }, [isFlipping]);
 
-    const handleNext = () => {
-        if (isChanging) return;
-        
+    const handleNext = useCallback(() => {
+        if (isChanging || currentIndex >= deck?.cards?.length) return;
+
         const delay = isFront ? 100 : FLIP_DURATION_MS;
 
         setIsChanging(true);
@@ -201,9 +166,9 @@ function Flashcards() {
             setCurrentIndex(prev => prev+1);
             setIsChanging(false);
         }, delay);
-    };
+    }, [isChanging, isFront, currentIndex, deck?.cards?.length]);
 
-    const handleBack = () => {
+    const handleBack = useCallback(() => {
         if (isChanging || currentIndex === 0) return;
 
         const delay = isFront ? 100 : FLIP_DURATION_MS;
@@ -216,7 +181,56 @@ function Flashcards() {
             setCurrentIndex(prev => prev-1);
             setIsChanging(false);
         }, delay);  
+    }, [isChanging, isFront, currentIndex]);
+
+    function handleReset() {
+        setCurrentIndex(0);
+        setIsFront(true);
+        if (shuffle) {
+            setShuffledCards(getShuffledDeck());
+        }
+        localStorage.removeItem('flashcard-state');
+    }
+
+    useEffect(() => {
+    const handleKeyDown = (event) => {
+        if (event.key === 'ArrowRight') {
+            handleNext();
+        } else if (event.key === 'ArrowLeft') {
+            handleBack();
+        } else if (event.key === ' ' || event.key === 'Spacebar') {
+            // Prevent the page from scrolling when spacebar is pressed
+            event.preventDefault();
+            handleFlip();
+        }
     };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+        window.removeEventListener('keydown', handleKeyDown);
+    };
+}, [handleNext, handleBack, handleFlip]);
+
+
+    // This prevents a user from manually typing in the url to the flashcard study page without going through the menu and selecting a deck.
+    if (!deckId) return <Navigate to="/menu" />;
+
+    // This shows a loading screen while waiting for the database query to complete.
+    if (loading || !ready) return <p className='loading'>Loading deck...</p>;
+    
+    // Show an error message if fetching the deck failed.
+    if (error) return <p>{error}</p>;
+    if (!deck || !deck.cards) return <p>Deck data is invalid.</p>;
+
+
+    // Each render this gets the current card. 
+    let currentCard = null;
+    if (shuffle) { // new
+        currentCard = shuffledCards[currentIndex];
+    } else {
+        currentCard = deck?.cards?.[currentIndex];
+    }
 
     const toastStyle = {
         position: 'fixed',
@@ -282,10 +296,9 @@ function Flashcards() {
                                 </div>
                             </div>
                         ) : (
-                            <>
-                            <p>Complete</p>
-                            <button onClick={handleReset} className='reset-button'>Reset</button>
-                            </>
+                            <div className='flip-card complete'>
+                                <p>Complete</p>
+                            </div>
                         )}
                     </div>)
                 }
