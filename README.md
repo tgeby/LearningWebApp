@@ -35,5 +35,4 @@ When a timer expires, a browser notification will show in addition to the timer 
 
 - 🧠 Memory Game mode — interactive game to reinforce flashcards
 - 📝 Test mode — generate quizzes from deck content
-- 🔀 Shuffle mode — study cards in random order
 - Integrated AI Powered Deck Creation - Rather than requiring a user to query ChatGPT themself, I'd like to allow them to just input a topic and handle the query and deck creation from inside the app.
