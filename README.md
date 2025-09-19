@@ -1,10 +1,34 @@
 # LearningWebApp
 A serverless web application created with React and hosted on Firebase. It supports user authentication with email/password or Google accounts. 
+
 Live App: https://study-tool-b4548.web.app
+
+## Overview
+When I was in college, I encountered many professors who asked students not to upload their course material to Quizlet since then people can access it for free. The point of this app is to allow a more private alternative by restricting access to flashcards only to the user that uploaded them. 
+
+Another purpose for this app is simply to give me experience in web development and UI design.
 
 This app has two main features:
 1. The ability to create, edit, and study private, virtual flashcard sets.
-2. An interval timer/pacer that allows the user to specify work and rest intervals. This can be used as a Pomodoro timer.
+2. An interval timer that allows the user to specify work and rest intervals. This can be used as a Pomodoro timer to manage time during study sessions.
+
+## 🛠️ Tech Stack
+Frontend: React, React Router, CSS3
+Backend/Database: Firebase Authentication, Firestore (serverless)
+Deployment: Firebase Hosting
+Other: Git, NPM
+
+## 🔮 Status
+✅ Core features (flashcards, private storage, interval timer) are complete.  
+⚠️ This repo is no longer being actively developed.  
+🆕 A refactored version is in progress that separates the flashcards and interval timer into modular apps, improving usability and accessibility.  
+(Link to new repo coming soon)
+
+Why a new repo?
+1. This project remains accessible since it is linked in existing job applications. 
+2. Future development will expand beyond flashcards and timers, so a modular architecture is more suitable.
+3. The new version adopts SOLID design principles and a cleaner component structure.
+4. Styling is being migrated from plain CSS to Tailwind CSS for maintainability and scalability.
 
 ## Flashcards
 Flashcard sets are linked to a user id, so a user can access their study sets from their laptop, phone, or tablet.
@@ -31,8 +55,3 @@ When a timer expires, a browser notification will show in addition to the timer 
 ### The timer will keep working if you accidentally refresh or close the tab
 ![Interval timer example gif](timerExample.gif)
 
-## Planned Features
-
-- 🧠 Memory Game mode — interactive game to reinforce flashcards
-- 📝 Test mode — generate quizzes from deck content
-- Integrated AI Powered Deck Creation - Rather than requiring a user to query ChatGPT themself, I'd like to allow them to just input a topic and handle the query and deck creation from inside the app.
