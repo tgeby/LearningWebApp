@@ -13,10 +13,10 @@ This app has two main features:
 2. An interval timer that allows the user to specify work and rest intervals. This can be used as a Pomodoro timer to manage time during study sessions.
 
 ## 🛠️ Tech Stack
-Frontend: React, React Router, CSS3
-Backend/Database: Firebase Authentication, Firestore (serverless)
-Deployment: Firebase Hosting
-Other: Git, NPM
+* Frontend: React, React Router, CSS3
+* Backend/Database: Firebase Authentication, Firestore (serverless)
+* Deployment: Firebase Hosting
+* Other: Git, NPM
 
 ## 🔮 Status
 ✅ Core features (flashcards, private storage, interval timer) are complete.  
