@@ -21,14 +21,6 @@ This app has two main features:
 ## 🔮 Status
 ✅ Core features (flashcards, private storage, interval timer) are complete.  
 ⚠️ This repo is no longer being actively developed.  
-🆕 A refactored version is in progress that separates the flashcards and interval timer into modular apps, improving usability and accessibility.  
-(Link to new repo coming soon)
-
-Why a new repo?
-1. This project remains accessible since it is linked in existing job applications. 
-2. Future development will expand beyond flashcards and timers, so a modular architecture is more suitable.
-3. The new version adopts SOLID design principles and a cleaner component structure.
-4. Styling is being migrated from plain CSS to Tailwind CSS for maintainability and scalability.
 
 ## Flashcards
 Flashcard sets are linked to a user id, so a user can access their study sets from their laptop, phone, or tablet.
